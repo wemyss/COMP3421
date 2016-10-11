@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.util.gl2.GLUT;
 
 
 
@@ -161,56 +162,16 @@ public class Terrain {
     
 	public void drawTerrain(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
+		GLUT glut = new GLUT();
 		float[] difColor = {1.0f, 1.0f, 0f, 1}; 
         gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, difColor, 0);
 
         gl.glPushMatrix();
 		
-		gl.glBegin(GL2.GL_QUADS);
-        {
-            // top y = 1
-            gl.glNormal3d(0,1,0);
-            gl.glVertex3d(-1, 1, -1);
-            gl.glVertex3d(1, 1, -1);
-            gl.glVertex3d(1, 1, 1);
-            gl.glVertex3d(-1, 1, 1);
-
-            // bottom y = -1
-            gl.glNormal3d(0,-1,0);
-            gl.glVertex3d(-1, -1, -1);
-            gl.glVertex3d(-1, -1, 1);
-            gl.glVertex3d(1, -1, 1);
-            gl.glVertex3d(1, -1, -1);
-
-            // left x = -1
-            gl.glNormal3d(-1,0,0);
-            gl.glVertex3d(-1, -1, -1);
-            gl.glVertex3d(-1, 1, -1);
-            gl.glVertex3d(-1, 1, 1);
-            gl.glVertex3d(-1, -1, 1);
-            
-            // right x = 1
-            gl.glNormal3d(1,0,0);
-            gl.glVertex3d(1, -1, -1);
-            gl.glVertex3d(1, -1, 1);
-            gl.glVertex3d(1, 1, 1);
-            gl.glVertex3d(1, 1, -1);
-
-            // front z = 1
-            gl.glNormal3d(0,0,1);
-            gl.glVertex3d(-1, -1, 1);
-            gl.glVertex3d(1, -1, 1);
-            gl.glVertex3d(1, 1, 1);
-            gl.glVertex3d(-1, 1, 1);
-
-            // back z = -1
-            gl.glNormal3d(0,0,-1);
-            gl.glVertex3d(-1, -1, -1);
-            gl.glVertex3d(-1, 1, -1);
-            gl.glVertex3d(1, 1, -1);
-            gl.glVertex3d(1, -1, -1);
-        }        
-        gl.glEnd();
+        gl.glFrontFace(GL2.GL_CW);
+        glut.glutSolidTeapot(1);
+        gl.glFrontFace(GL2.GL_CCW);
+        
 	}
 
 }
