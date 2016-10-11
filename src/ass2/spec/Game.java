@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLJPanel;
+import com.jogamp.opengl.glu.GLU;
+
 import javax.swing.JFrame;
 import com.jogamp.opengl.util.FPSAnimator;
 
@@ -56,11 +58,18 @@ public class Game extends JFrame implements GLEventListener {
         Game game = new Game(terrain);
         game.run();
     }
-
+    
 	@Override
 	public void display(GLAutoDrawable drawable) {
-		// TODO Auto-generated method stub
-		
+		GL2 gl = drawable.getGL().getGL2();    	
+    	gl.glMatrixMode(GL2.GL_MODELVIEW);
+    	gl.glLoadIdentity();
+
+    	//Move camera back
+    	gl.glTranslated(0, 0, -3.5);
+    	
+    	gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+    	this.myTerrain.drawTerrain(drawable);
 	}
 
 	@Override
@@ -71,14 +80,37 @@ public class Game extends JFrame implements GLEventListener {
 
 	@Override
 	public void init(GLAutoDrawable drawable) {
-		// TODO Auto-generated method stub
-		
+		GL2 gl = drawable.getGL().getGL2();    	
+    	gl.glEnable(GL2.GL_DEPTH_TEST);
+    	
+    	//By enabling lighting, color is worked out differently.
+    	gl.glEnable(GL2.GL_LIGHTING);
+    	
+    	//When you enable lighting you must still actually
+    	//turn on a light such as this default light.
+    	gl.glEnable(GL2.GL_LIGHT0); 
+    	gl.glEnable(GL2.GL_NORMALIZE);
+    	
+    	//To check if our winding order is correct
+    	gl.glEnable(GL2.GL_CULL_FACE);
+        gl.glCullFace(GL2.GL_BACK);
 	}
 
 	@Override
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width,
 			int height) {
-		// TODO Auto-generated method stub
-		
+		GL2 gl = drawable.getGL().getGL2();
+        gl.glMatrixMode(GL2.GL_PROJECTION);
+        gl.glLoadIdentity();  
+        
+        //You can use an orthographic camera
+        //gl.glOrtho(-2, 2, -2, 2, 1, 20);
+        GLU glu = new GLU();
+        //glu.gluPerspective(60,1,2,8);
+        
+        //To find equivalent settings using gl.glFrustum
+        // y = near * tan (30);
+        // x = aspect * y
+        gl.glFrustum(-1.15, 1.15, -1.15, 1.15, 2, 8);
 	}
 }
