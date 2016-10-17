@@ -22,7 +22,9 @@ public class Terrain {
     private List<Tree> myTrees;
     private List<Road> myRoads;
     private float[] mySunlight;
-
+    
+    
+    
     /**
      * Create a new terrain
      *
@@ -35,6 +37,8 @@ public class Terrain {
         myTrees = new ArrayList<Tree>();
         myRoads = new ArrayList<Road>();
         mySunlight = new float[3];
+        
+        
     }
     
     public Terrain(Dimension size) {
@@ -170,11 +174,11 @@ public class Terrain {
     }
 
 
-    public void draw(GLAutoDrawable drawable) {
-    	drawTerrain(drawable);
+    public void draw(GLAutoDrawable drawable, Texture[] textures) {
+    	drawTerrain(drawable, textures);
     }
     
-	public void drawTerrain(GLAutoDrawable drawable) {
+	public void drawTerrain(GLAutoDrawable drawable, Texture[] textures) {
 		GL2 gl = drawable.getGL().getGL2();
 		GLUT glut = new GLUT();
 		float[] difColor = {1.0f, 1.0f, 0f, 1}; 
@@ -182,6 +186,10 @@ public class Terrain {
 
         gl.glPushMatrix();
 		
+        // Specify how texture values combine with current surface color values.
+    	gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);     
+
+    	
         //Draw Teapot
 
 //        float matAmbAndDif[] = {1.0f, 0.0f, 0.0f, 1.0f};
@@ -199,16 +207,21 @@ public class Terrain {
 //        glut.glutSolidTeapot(1.5);
 //        gl.glFrontFace(GL2.GL_CCW);
 
-		gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_LINE);
+		gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_FILL);
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[0].getTextureId()); 
         gl.glBegin(GL2.GL_TRIANGLE_STRIP);
         Dimension size = this.size();
         int height = size.height;
         int width = size.width;
         for (int z = 0; z < height - 1; z++){
-        	for (int x = 0; x < width - 1; x++){
+        	for (int x = 0; x < width - 1; x+=2){
+        		gl.glTexCoord3d(0.0, 0.0, 0.0);
         		gl.glVertex3f( x, (float) this.altitude(x, z), z ); //vertex 1
+        		gl.glTexCoord3d(0.0, 0.0, 1.0);
                 gl.glVertex3f( x, (float) this.altitude(x, z+1), z+1 ); //vertex 2
+                gl.glTexCoord3d(1.0, 0.0, 0.0);
                 gl.glVertex3f( x+1, (float) this.altitude(x+1, z), z ); //vertex 3
+                gl.glTexCoord3d(1.0, 0.0, 1.0);
                 gl.glVertex3f( x+1, (float) this.altitude(x+1, z+1), z+1 ); //vertex 4
         	}
         }

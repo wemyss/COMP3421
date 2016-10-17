@@ -25,13 +25,17 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     private Terrain myTerrain;
     private Lighting myLighting;
     private int z;
-
+    
+    private String sandFileName = "textures/sand.bmp";
+    private String sandFileExt = "bmp";
+    private Texture textures[];
+    
     public Game(Terrain terrain, Lighting lighting) {
     	super("Assignment 2");
         myTerrain = terrain;
         myLighting = lighting;
         z = -10;
-   
+        textures = new Texture[1];
     }
     
     /** 
@@ -85,7 +89,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     	gl.glTranslated(-4.5, -3, z);
     	
     	gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
-    	this.myTerrain.drawTerrain(drawable);
+    	this.myTerrain.draw(drawable, textures);
 	}
 
 	@Override
@@ -109,6 +113,10 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     	
     	gl.glEnable(GL2.GL_CULL_FACE);
         gl.glCullFace(GL2.GL_BACK);
+        
+        gl.glEnable(GL.GL_TEXTURE_2D);
+        
+        textures[0] = new Texture(gl,sandFileName, sandFileExt);
 	}
 
 	@Override
