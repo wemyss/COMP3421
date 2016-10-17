@@ -49,7 +49,7 @@ public class Game extends JFrame implements GLEventListener {
           setDefaultCloseOperation(EXIT_ON_CLOSE);
           
           // add a GL Event listener to handle rendering
-          panel.addKeyListener(myLighting);
+//          panel.addKeyListener(myLighting);
           panel.setFocusable(true);
     }
     
@@ -73,8 +73,9 @@ public class Game extends JFrame implements GLEventListener {
     	gl.glLoadIdentity();
 
     	//Move camera back
-    	gl.glTranslated(0, 0, -3.5);
-    	this.myLighting.setLighting(gl);
+
+//    	this.myLighting.setLighting(gl);
+    	gl.glTranslated(-4.5, -3, -10);
     	
     	gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
     	this.myTerrain.drawTerrain(drawable);
@@ -113,12 +114,13 @@ public class Game extends JFrame implements GLEventListener {
         
         //You can use an orthographic camera
         //gl.glOrtho(-2, 2, -2, 2, 1, 20);
-        GLU glu = new GLU();
+//        GLU glu = new GLU();
         //glu.gluPerspective(60,1,2,8);
         
         //To find equivalent settings using gl.glFrustum
         // y = near * tan (30);
         // x = aspect * y
-        gl.glFrustum(-4.15, 4.15, -4.15, 4.15, 2, 20);
+
+        gl.glFrustum(-2.15, 2.15, -2.15, 2.15, 2, 8);
 	}
 }

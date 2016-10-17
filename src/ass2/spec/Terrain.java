@@ -123,13 +123,27 @@ public class Terrain {
      * @return
      */
     public double altitude(double x, double z) {
-        double altitude = 0;
-
-        
-        
+    	double altitude = 0;
+    	if (x % 1 != 0 && z % 1 != 0){
+    		int x1 = (int) Math.floor(x);
+    		int x2 = (int) Math.ceil(x);
+    		double leftAltitude = altitude(x1, z);
+    		double rightAltitude = altitude(x2, z);
+    		altitude = (x - x1)/(x2 - x1) * leftAltitude + (x2 - x)/(x2 - x1) * rightAltitude;
+    	} else if (x % 1 != 0) {
+    		int x1 = (int) Math.floor(x);
+    		int x2 = (int) Math.ceil(x);
+    		altitude = (x - x1)/(x2 - x1) * myAltitude[x2][(int) z] + (x2 - x)/(x2 - x1) * myAltitude[x1][(int) z];
+    	} else if (z % 1 != 0) {
+    		int z1 = (int) Math.floor(z);
+    		int z2 = (int) Math.floor(z);
+			altitude = (z - z1)/(z2 - z1) * myAltitude[(int) x][z2] + (z2 - z)/(z2 - z1) * myAltitude[(int) x][z1];
+    	} else {
+    		altitude = myAltitude[(int)x][(int)z];
+    	}
         return altitude;
     }
-
+        
     /**
      * Add a tree at the specified (x,z) point. 
      * The tree's y coordinate is calculated from the altitude of the terrain at that point.
@@ -164,27 +178,43 @@ public class Terrain {
 		GL2 gl = drawable.getGL().getGL2();
 		GLUT glut = new GLUT();
 		float[] difColor = {1.0f, 1.0f, 0f, 1}; 
-        gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, difColor, 0);
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_DIFFUSE, difColor, 0);
 
         gl.glPushMatrix();
 		
         //Draw Teapot
 
-        float matAmbAndDif[] = {1.0f, 0.0f, 0.0f, 1.0f};
-        float matSpec[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-        float matShine[] = { 50.0f };
-        float emm[] = {0.0f, 0.0f, 0.0f, 1.0f};
+//        float matAmbAndDif[] = {1.0f, 0.0f, 0.0f, 1.0f};
+//        float matSpec[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+//        float matShine[] = { 50.0f };
+//        float emm[] = {0.0f, 0.0f, 0.0f, 1.0f};
+//        
+//        // Material properties of teapot
+//        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif,0);
+//        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec,0);
+//        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine,0);
+//        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_EMISSION, emm,0);
+//        
+//        gl.glFrontFace(GL2.GL_CW);
+//        glut.glutSolidTeapot(1.5);
+//        gl.glFrontFace(GL2.GL_CCW);
+
+		gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_LINE);
+        gl.glBegin(GL2.GL_TRIANGLE_STRIP);
+        Dimension size = this.size();
+        int height = size.height;
+        int width = size.width;
+        for (int z = 0; z < height - 1; z++){
+        	for (int x = 0; x < width - 1; x++){
+        		gl.glVertex3f( x, (float) this.altitude(x, z), z ); //vertex 1
+                gl.glVertex3f( x, (float) this.altitude(x, z+1), z+1 ); //vertex 2
+                gl.glVertex3f( x+1, (float) this.altitude(x+1, z), z ); //vertex 3
+                gl.glVertex3f( x+1, (float) this.altitude(x+1, z+1), z+1 ); //vertex 4
+        	}
+        }
         
-        // Material properties of teapot
-        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif,0);
-        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec,0);
-        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine,0);
-        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_EMISSION, emm,0);
-        
-        gl.glFrontFace(GL2.GL_CW);
-        glut.glutSolidTeapot(1.5);
-        gl.glFrontFace(GL2.GL_CCW);
-        
+        gl.glEnd();
+        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
 	}
 
 }
