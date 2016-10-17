@@ -19,10 +19,12 @@ import com.jogamp.opengl.util.FPSAnimator;
 public class Game extends JFrame implements GLEventListener {
 
     private Terrain myTerrain;
+    private Lighting myLighting;
 
-    public Game(Terrain terrain) {
+    public Game(Terrain terrain, Lighting lighting) {
     	super("Assignment 2");
         myTerrain = terrain;
+        myLighting = lighting;
    
     }
     
@@ -44,7 +46,11 @@ public class Game extends JFrame implements GLEventListener {
           getContentPane().add(panel);
           setSize(800, 600);        
           setVisible(true);
-          setDefaultCloseOperation(EXIT_ON_CLOSE);        
+          setDefaultCloseOperation(EXIT_ON_CLOSE);
+          
+          // add a GL Event listener to handle rendering
+          panel.addKeyListener(myLighting);
+          panel.setFocusable(true);
     }
     
     /**
@@ -55,7 +61,8 @@ public class Game extends JFrame implements GLEventListener {
      */
     public static void main(String[] args) throws FileNotFoundException {
         Terrain terrain = LevelIO.load(new File(args[0]));
-        Game game = new Game(terrain);
+        Lighting lighting = new Lighting();
+        Game game = new Game(terrain, lighting);
         game.run();
     }
     
@@ -67,6 +74,7 @@ public class Game extends JFrame implements GLEventListener {
 
     	//Move camera back
     	gl.glTranslated(0, 0, -3.5);
+    	this.myLighting.setLighting(gl);
     	
     	gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
     	this.myTerrain.drawTerrain(drawable);
@@ -111,6 +119,6 @@ public class Game extends JFrame implements GLEventListener {
         //To find equivalent settings using gl.glFrustum
         // y = near * tan (30);
         // x = aspect * y
-        gl.glFrustum(-1.15, 1.15, -1.15, 1.15, 2, 8);
+        gl.glFrustum(-4.15, 4.15, -4.15, 4.15, 2, 20);
 	}
 }
