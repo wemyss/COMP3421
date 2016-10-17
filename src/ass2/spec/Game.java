@@ -21,21 +21,26 @@ import com.jogamp.opengl.util.FPSAnimator;
  * @author malcolmr
  */
 public class Game extends JFrame implements GLEventListener, KeyListener {
-
+	private static final double CAMERA_ROTATION_RATE = 0.4;
+	private static final int ANGLE_ROTATION_RATE = 5;
     private Terrain myTerrain;
     private Lighting myLighting;
-    private int z;
-    
+
     private String sandFileName = "textures/sand.bmp";
     private String sandFileExt = "bmp";
     private Texture textures[];
     
+    private double x = -4.5;
+    private double y = -3;
+    private double z = -10;
+    private int angle = 0;
+
     public Game(Terrain terrain, Lighting lighting) {
     	super("Assignment 2");
         myTerrain = terrain;
         myLighting = lighting;
-        z = -10;
         textures = new Texture[1];
+
     }
     
     /** 
@@ -83,10 +88,11 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     	gl.glMatrixMode(GL2.GL_MODELVIEW);
     	gl.glLoadIdentity();
 
-    	//Move camera back
 
 //    	this.myLighting.setLighting(gl);
-    	gl.glTranslated(-4.5, -3, z);
+    	gl.glRotated (angle, 0, 1, 0);	// Pan left/right
+    	gl.glTranslated(x, y, z);	 	// Move camera back
+    	
     	
     	gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
     	this.myTerrain.draw(drawable, textures);
@@ -142,21 +148,46 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
+		System.out.println("SAM");
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
 			 case KeyEvent.VK_UP:
-				 z = z + 1;
+				 z += CAMERA_ROTATION_RATE * Math.cos(Math.toRadians(angle));
+				 x -= CAMERA_ROTATION_RATE * Math.sin(Math.toRadians(angle));
 				 break;
 			 case KeyEvent.VK_DOWN:	     
-				 z = z - 1;
-				 break;		
+				 z -= CAMERA_ROTATION_RATE * Math.cos(Math.toRadians(angle));
+				 x += CAMERA_ROTATION_RATE * Math.sin(Math.toRadians(angle));
+				 break;
+			 case KeyEvent.VK_LEFT:
+				 angle = (angle - ANGLE_ROTATION_RATE) % 360;
+				 break;
+			 case KeyEvent.VK_RIGHT:	     
+				 angle = (angle + ANGLE_ROTATION_RATE) % 360;
+				 break;	
+			 case KeyEvent.VK_A:
+				 // Step left
+				 x += CAMERA_ROTATION_RATE;
+				 break;
+			 case KeyEvent.VK_D:
+				 // Step right
+				 x -= CAMERA_ROTATION_RATE;
+				 break;
+			 case KeyEvent.VK_S:
+				 // Step down
+				 y += CAMERA_ROTATION_RATE;
+				 break;
+			 case KeyEvent.VK_W:
+				 // Step up
+				 y -= CAMERA_ROTATION_RATE;
+				 break;
 			 default:
 				 break;
 		}
-		System.out.println(z);
+		System.out.println(angle);
 	}
 
 	@Override
