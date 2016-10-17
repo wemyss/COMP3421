@@ -66,7 +66,7 @@ public class Game extends JFrame implements GLEventListener {
     	gl.glLoadIdentity();
 
     	//Move camera back
-    	gl.glTranslated(0, 0, -3.5);
+    	gl.glTranslated(-4.5, -3, -10);
     	
     	gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
     	this.myTerrain.drawTerrain(drawable);
@@ -111,6 +111,6 @@ public class Game extends JFrame implements GLEventListener {
         //To find equivalent settings using gl.glFrustum
         // y = near * tan (30);
         // x = aspect * y
-        gl.glFrustum(-1.15, 1.15, -1.15, 1.15, 2, 8);
+        gl.glFrustum(-2.15, 2.15, -2.15, 2.15, 2, 8);
 	}
 }
