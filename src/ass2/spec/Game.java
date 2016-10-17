@@ -2,6 +2,10 @@ package ass2.spec;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLJPanel;
 import com.jogamp.opengl.glu.GLU;
@@ -16,15 +20,17 @@ import com.jogamp.opengl.util.FPSAnimator;
  *
  * @author malcolmr
  */
-public class Game extends JFrame implements GLEventListener {
+public class Game extends JFrame implements GLEventListener, KeyListener {
 
     private Terrain myTerrain;
     private Lighting myLighting;
+    private int z;
 
     public Game(Terrain terrain, Lighting lighting) {
     	super("Assignment 2");
         myTerrain = terrain;
         myLighting = lighting;
+        z = -10;
    
     }
     
@@ -37,6 +43,7 @@ public class Game extends JFrame implements GLEventListener {
           GLCapabilities caps = new GLCapabilities(glp);
           GLJPanel panel = new GLJPanel();
           panel.addGLEventListener(this);
+          panel.addKeyListener(this);
  
           // Add an animator to call 'display' at 60fps        
           FPSAnimator animator = new FPSAnimator(60);
@@ -75,7 +82,7 @@ public class Game extends JFrame implements GLEventListener {
     	//Move camera back
 
 //    	this.myLighting.setLighting(gl);
-    	gl.glTranslated(-4.5, -3, -10);
+    	gl.glTranslated(-4.5, -3, z);
     	
     	gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
     	this.myTerrain.drawTerrain(drawable);
@@ -100,7 +107,6 @@ public class Game extends JFrame implements GLEventListener {
     	gl.glEnable(GL2.GL_LIGHT0); 
     	gl.glEnable(GL2.GL_NORMALIZE);
     	
-    	//To check if our winding order is correct
     	gl.glEnable(GL2.GL_CULL_FACE);
         gl.glCullFace(GL2.GL_BACK);
 	}
@@ -121,6 +127,34 @@ public class Game extends JFrame implements GLEventListener {
         // y = near * tan (30);
         // x = aspect * y
 
-        gl.glFrustum(-2.15, 2.15, -2.15, 2.15, 2, 8);
+        gl.glFrustum(-2.15, 2.15, -2.15, 2.15, 2, 20);
 	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		switch (e.getKeyCode()) {
+			 case KeyEvent.VK_UP:
+				 z = z + 1;
+				 break;
+			 case KeyEvent.VK_DOWN:	     
+				 z = z - 1;
+				 break;		
+			 default:
+				 break;
+		}
+		System.out.println(z);
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
