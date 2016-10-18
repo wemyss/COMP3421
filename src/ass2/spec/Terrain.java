@@ -181,33 +181,12 @@ public class Terrain {
 	public void drawTerrain(GLAutoDrawable drawable, Texture[] textures) {
 		GL2 gl = drawable.getGL().getGL2();
 		GLUT glut = new GLUT();
-		float[] difColor = {1.0f, 1.0f, 0f, 1}; 
-        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_DIFFUSE, difColor, 0);
 
         gl.glPushMatrix();
 		
         // Specify how texture values combine with current surface color values.
     	gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);     
 
-    	
-        //Draw Teapot
-
-//        float matAmbAndDif[] = {1.0f, 0.0f, 0.0f, 1.0f};
-//        float matSpec[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-//        float matShine[] = { 50.0f };
-//        float emm[] = {0.0f, 0.0f, 0.0f, 1.0f};
-//        
-//        // Material properties of teapot
-//        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif,0);
-//        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec,0);
-//        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine,0);
-//        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_EMISSION, emm,0);
-//        
-//        gl.glFrontFace(GL2.GL_CW);
-//        glut.glutSolidTeapot(1.5);
-//        gl.glFrontFace(GL2.GL_CCW);
-
-		gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_FILL);
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[0].getTextureId()); 
         gl.glBegin(GL2.GL_TRIANGLE_STRIP);
         Dimension size = this.size();
