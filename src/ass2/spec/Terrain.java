@@ -215,17 +215,17 @@ public class Terrain {
         int width = size.width;
         for (int z = 0; z < height - 1; z++){
         	for (int x = 0; x < width - 1; x+=2){
-        		gl.glTexCoord3d(0.0, 0.0, 0.0);
-        		gl.glVertex3f( x, (float) this.altitude(x, z), z ); //vertex 1
-        		gl.glTexCoord3d(0.0, 0.0, 1.0);
-                gl.glVertex3f( x, (float) this.altitude(x, z+1), z+1 ); //vertex 2
-                gl.glTexCoord3d(1.0, 0.0, 0.0);
-                gl.glVertex3f( x+1, (float) this.altitude(x+1, z), z ); //vertex 3
-                gl.glTexCoord3d(1.0, 0.0, 1.0);
-                gl.glVertex3f( x+1, (float) this.altitude(x+1, z+1), z+1 ); //vertex 4
+        		gl.glTexCoord2d(0.0, 0.0);
+        		gl.glVertex3d( x, this.altitude(x, z), z ); //vertex 1
+        		gl.glTexCoord2d(0.0, 1.0);
+                gl.glVertex3d( x, this.altitude(x, z+1), z+1 ); //vertex 2
+                gl.glTexCoord2d(1.0, 0.0);
+                gl.glVertex3d( x+1, this.altitude(x+1, z), z ); //vertex 3
+                gl.glTexCoord2d(1.0, 1.0);
+                gl.glVertex3d( x+1, this.altitude(x+1, z+1), z+1 ); //vertex 4
         	}
         }
-        
+        gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
         gl.glEnd();
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
 	}
