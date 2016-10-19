@@ -2,10 +2,13 @@ package ass2.spec;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.glu.GLU;
+import com.jogamp.opengl.glu.GLUquadric;
 import com.jogamp.opengl.util.gl2.GLUT;
 
 
@@ -17,7 +20,10 @@ import com.jogamp.opengl.util.gl2.GLUT;
  */
 public class Terrain {
 
-    private Dimension mySize;
+    private static final int SLICES = 32;
+    private static final int SAND = 0;
+    private static final int CACTUS = 1;
+	private Dimension mySize;
     private double[][] myAltitude;
     private List<Tree> myTrees;
     private List<Road> myRoads;
@@ -137,13 +143,17 @@ public class Terrain {
     	} else if (x % 1 != 0) {
     		int x1 = (int) Math.floor(x);
     		int x2 = (int) Math.ceil(x);
-    		altitude = (x - x1)/(x2 - x1) * myAltitude[x2][(int) z] + (x2 - x)/(x2 - x1) * myAltitude[x1][(int) z];
+    		double rightAltitude = getGridAltitude(x2, (int) z);
+    		double leftAltitude =  getGridAltitude(x1, (int) z);
+    		altitude = (x - x1)/(x2 - x1) * rightAltitude + (x2 - x)/(x2 - x1) * leftAltitude;
     	} else if (z % 1 != 0) {
     		int z1 = (int) Math.floor(z);
-    		int z2 = (int) Math.floor(z);
-			altitude = (z - z1)/(z2 - z1) * myAltitude[(int) x][z2] + (z2 - z)/(z2 - z1) * myAltitude[(int) x][z1];
+    		int z2 = (int) Math.ceil(z);
+    		double floorAltitude = getGridAltitude((int) x, z1);
+    		double ceilAltitude = getGridAltitude((int) x, z2);
+			altitude = (z - z1)/(z2 - z1) * ceilAltitude + (z2 - z)/(z2 - z1) * floorAltitude;
     	} else {
-    		altitude = myAltitude[(int)x][(int)z];
+    		altitude = getGridAltitude((int) x, (int) z);
     	}
         return altitude;
     }
@@ -175,19 +185,17 @@ public class Terrain {
 
 
     public void draw(GLAutoDrawable drawable, Texture[] textures) {
-    	drawTerrain(drawable, textures);
+    	GL2 gl = drawable.getGL().getGL2();
+    	
+        // Specify how texture values combine with current surface color values.
+    	gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);  
+    	
+    	drawTerrain(gl, textures);
+    	drawTrees(gl, textures);
     }
     
-	public void drawTerrain(GLAutoDrawable drawable, Texture[] textures) {
-		GL2 gl = drawable.getGL().getGL2();
-		GLUT glut = new GLUT();
-
-        gl.glPushMatrix();
-		
-        // Specify how texture values combine with current surface color values.
-    	gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);     
-
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[0].getTextureId()); 
+	public void drawTerrain(GL2 gl, Texture[] textures) {
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[SAND].getTextureId()); 
         gl.glBegin(GL2.GL_TRIANGLE_STRIP);
         Dimension size = this.size();
         int height = size.height;
@@ -206,7 +214,56 @@ public class Terrain {
         }
         gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
         gl.glEnd();
-        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
 	}
 
+	public void drawTrees(GL2 gl, Texture[] textures) {
+		double angleIncrement = (Math.PI * 2.0) / SLICES;
+		double zFront = -1;
+        double height = 1;
+        List<Tree> trees = trees();
+        GLU glu = new GLU();
+        Iterator<Tree> treeIt = trees.iterator();
+        gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[CACTUS].getTextureId());
+        while (treeIt.hasNext()){
+        	//draw trunk
+        	Tree tree = treeIt.next();
+        	double[] pos = tree.getPosition();
+        	gl.glBegin(GL2.GL_QUAD_STRIP);{      
+    	        for(int i=0; i<= SLICES; i++){
+    	        	double angle0 = i*angleIncrement;
+    	        	double angle1 = (i+1)*angleIncrement;
+    	        	double xPos0 = Math.cos(angle0);
+    	        	double zPos0 = Math.sin(angle0);
+    	        	double sCoord = 2.0/SLICES * i * 2; //Or * 2 to repeat label
+    	        	
+    	        	gl.glTexCoord2d(sCoord,1);
+    	        	gl.glVertex3d(xPos0*0.3+pos[0],pos[1],zPos0*0.3+pos[2]);
+    	        	gl.glTexCoord2d(sCoord,0);
+    	        	gl.glVertex3d(xPos0*0.3+pos[0],pos[1]+height,zPos0*0.3+pos[2]);  	
+    	        }
+    	        
+            }gl.glEnd();
+            
+            //draw top
+//            gl.glPushMatrix();
+//     	   	gl.glTranslated(pos[0], pos[1]+height, pos[2]);
+//     	    gl.glPushAttrib(gl.GL_ALL_ATTRIB_BITS);
+//     	   	glut.glutSolidSphere(0.3, 50, 50);
+//     	    gl.glPopAttrib();
+//            gl.glPopMatrix();
+            
+            gl.glPushMatrix();
+     	   	gl.glTranslated(pos[0], pos[1]+height, pos[2]);
+     	    gl.glPushAttrib(gl.GL_ALL_ATTRIB_BITS);
+            GLUquadric sphere = glu.gluNewQuadric();
+            //glu.gluQuadricDrawStyle(sphere, GLU.GLU_FILL);
+            glu.gluQuadricTexture(sphere, true);
+            //glu.gluQuadricNormals(sphere, GLU.GLU_SMOOTH);
+            glu.gluSphere(sphere, 0.3, SLICES, 25);
+     	    gl.glPopAttrib();
+     	    gl.glPopMatrix();
+        }
+        gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+        
+	}
 }

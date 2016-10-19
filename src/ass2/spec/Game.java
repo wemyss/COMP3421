@@ -28,6 +28,8 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 
     private String sandFileName = "textures/sand.bmp";
     private String sandFileExt = "bmp";
+    private String cactusFileName = "textures/cactus.bmp";
+    private String cactusFileExt = "bmp";
     private Texture textures[];
     
     private double x = -4.5;
@@ -39,7 +41,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     	super("Assignment 2");
         myTerrain = terrain;
         myLighting = lighting;
-        textures = new Texture[1];
+        textures = new Texture[2];
 
     }
     
@@ -93,7 +95,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     	gl.glRotated (angle, 0, 1, 0);	// Pan left/right
     	gl.glTranslated(x, y, z);	 	// Move camera back
     	
-    	
+    	gl.glClearColor(1.0f, 0.71f, 0.58f, 1);
     	gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
     	this.myTerrain.draw(drawable, textures);
 	}
@@ -123,6 +125,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         gl.glEnable(GL.GL_TEXTURE_2D);
         
         textures[0] = new Texture(gl,sandFileName, sandFileExt);
+        textures[1] = new Texture(gl,cactusFileName, cactusFileExt);
 	}
 
 	@Override
