@@ -24,7 +24,6 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 	private static final double CAMERA_ROTATION_RATE = 0.4;
 	private static final int ANGLE_ROTATION_RATE = 5;
     private Terrain myTerrain;
-    private Lighting myLighting;
 
     private String sandFileName = "textures/sand.bmp";
     private String sandFileExt = "bmp";
@@ -35,10 +34,9 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     private double z = -10;
     private int angle = 0;
 
-    public Game(Terrain terrain, Lighting lighting) {
+    public Game(Terrain terrain) {
     	super("Assignment 2");
         myTerrain = terrain;
-        myLighting = lighting;
         textures = new Texture[1];
 
     }
@@ -65,7 +63,6 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
           setDefaultCloseOperation(EXIT_ON_CLOSE);
           
           // add a GL Event listener to handle rendering
-//          panel.addKeyListener(myLighting);
           panel.setFocusable(true);
     }
     
@@ -77,19 +74,19 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
      */
     public static void main(String[] args) throws FileNotFoundException {
         Terrain terrain = LevelIO.load(new File(args[0]));
-        Lighting lighting = new Lighting();
-        Game game = new Game(terrain, lighting);
+        terrain.setNormals();
+        Game game = new Game(terrain);
         game.run();
     }
     
 	@Override
 	public void display(GLAutoDrawable drawable) {
-		GL2 gl = drawable.getGL().getGL2();    	
+		GL2 gl = drawable.getGL().getGL2();
     	gl.glMatrixMode(GL2.GL_MODELVIEW);
     	gl.glLoadIdentity();
+    	
+    	this.myTerrain.setLighting(gl);
 
-
-//    	this.myLighting.setLighting(gl);
     	gl.glRotated (angle, 0, 1, 0);	// Pan left/right
     	gl.glTranslated(x, y, z);	 	// Move camera back
     	

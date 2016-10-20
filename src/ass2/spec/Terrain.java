@@ -19,9 +19,11 @@ public class Terrain {
 
     private Dimension mySize;
     private double[][] myAltitude;
+    private double[][] myNormals;
     private List<Tree> myTrees;
     private List<Road> myRoads;
     private float[] mySunlight;
+    private Lighting myLighting;
     
     
     
@@ -34,11 +36,11 @@ public class Terrain {
     public Terrain(int width, int depth) {
         mySize = new Dimension(width, depth);
         myAltitude = new double[width][depth];
+        myNormals = new double[((width-1) * (depth-1)) * 2][3];
         myTrees = new ArrayList<Tree>();
         myRoads = new ArrayList<Road>();
         mySunlight = new float[3];
-        
-        
+        myLighting = new Lighting();
     }
     
     public Terrain(Dimension size) {
@@ -73,7 +75,7 @@ public class Terrain {
     public void setSunlightDir(float dx, float dy, float dz) {
         mySunlight[0] = dx;
         mySunlight[1] = dy;
-        mySunlight[2] = dz;        
+        mySunlight[2] = dz;
     }
     
     /**
@@ -92,6 +94,51 @@ public class Terrain {
                 myAltitude[i][j] = oldAlt[i][j];
             }
         }
+    }
+    
+    public void setNormals() {
+    	int count = 0;
+    	for (int z = 0; z < mySize.height-1; ++z) {
+    		for (int x = 0; x < mySize.width-1; ++x) {
+    			double[] v1 =  new double[3];
+    			double[] v2 =  new double[3];
+    			
+    			// TRIANGLE 1
+    			// p2 - p1
+    			v1[0] = 0;
+    			v1[1] = myAltitude[x][z+1] - myAltitude[x][z];
+    			v1[2] = 1;
+    			
+    			// p3 - p1
+    			v2[0] = 1;
+    			v2[1] = myAltitude[x+1][z] - myAltitude[x][z];
+    			v2[2] = 0;
+    			
+    			setNormal(v1, v2, count);	
+    			count++;
+    			
+    			
+    			// TRIANGLE 2
+    			// p2 - p1
+    			v1[0] = 1;
+    			v1[1] = myAltitude[x][z+1] - myAltitude[x+1][z+1];
+    			v1[2] = 0;
+    			
+    			// p3 - p1
+    			v2[0] = 0;
+    			v2[1] = myAltitude[x+1][z] - myAltitude[x+1][z+1];
+    			v2[2] = 1;
+    			
+    			setNormal(v1, v2, count);		
+    			count++;
+    		}
+    	}
+    }
+    
+    private void setNormal(double[] v1, double[] v2, int pos) {
+    	myNormals[pos][0] = v1[1]*v2[2] - v1[2]*v2[1];
+		myNormals[pos][1] = v1[2]*v2[0] - v1[0]*v2[2];
+		myNormals[pos][2] = v1[0]*v2[1] - v1[1]*v2[0];
     }
 
     /**
@@ -120,7 +167,6 @@ public class Terrain {
      * Get the altitude at an arbitrary point. 
      * Non-integer points should be interpolated from neighbouring grid points
      * 
-     * TO BE COMPLETED
      * 
      * @param x
      * @param z
@@ -172,36 +218,57 @@ public class Terrain {
         Road road = new Road(width, spine);
         myRoads.add(road);        
     }
+    
+    public void setLighting(GL2 gl) {
+    	this.myLighting.setLighting(gl, mySunlight);
+    }
 
 
     public void draw(GLAutoDrawable drawable, Texture[] textures) {
+    	
     	drawTerrain(drawable, textures);
     }
     
 	public void drawTerrain(GLAutoDrawable drawable, Texture[] textures) {
 		GL2 gl = drawable.getGL().getGL2();
-		GLUT glut = new GLUT();
+		
+		float matAmbAndDif[] = {1.0f, .85f, .5f, 1.0f};
+        float matSpec[] = { .0f, .5f, 1.0f, 1.0f };
+        float matShine[] = { 1.0f };
+        float emm[] = {0.0f, 0.0f, 0.0f, 1.0f};
+//        
+//        // Material properties of teapot
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif,0);
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec,0);
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine,0);
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_EMISSION, emm,0);
+        
+        gl.glMaterialf(GL2.GL_FRONT, GL2.GL_SHININESS, 40);	// phong
 
         gl.glPushMatrix();
 		
         // Specify how texture values combine with current surface color values.
-    	gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);     
+    	gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
 
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[0].getTextureId()); 
         gl.glBegin(GL2.GL_TRIANGLE_STRIP);
         Dimension size = this.size();
         int height = size.height;
         int width = size.width;
+        int count = 0;
         for (int z = 0; z < height - 1; z++){
-        	for (int x = 0; x < width - 1; x+=2){
+        	for (int x = 0; x < width - 1; x+=1) {
+        		gl.glNormal3dv(myNormals[count], 0);
         		gl.glTexCoord2d(0.0, 0.0);
         		gl.glVertex3d( x, this.altitude(x, z), z ); //vertex 1
         		gl.glTexCoord2d(0.0, 1.0);
                 gl.glVertex3d( x, this.altitude(x, z+1), z+1 ); //vertex 2
                 gl.glTexCoord2d(1.0, 0.0);
                 gl.glVertex3d( x+1, this.altitude(x+1, z), z ); //vertex 3
+                gl.glNormal3dv(myNormals[count+1], 0);
                 gl.glTexCoord2d(1.0, 1.0);
                 gl.glVertex3d( x+1, this.altitude(x+1, z+1), z+1 ); //vertex 4
+                count += 2;
         	}
         }
         gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
