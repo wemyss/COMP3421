@@ -3,6 +3,8 @@ package ass2.spec;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jogamp.opengl.GL2;
+
 /**
  * COMMENT: Comment Road 
  *
@@ -12,6 +14,7 @@ public class Road {
 
     private List<Double> myPoints;
     private double myWidth;
+    private final int numPoints = 20;
     
     /** 
      * Create a new road starting at the specified point
@@ -95,7 +98,7 @@ public class Road {
      * @param t
      * @return
      */
-    public double[] point(double t) {
+    public double[] point(double t, Terrain terrain) {
         int i = (int)Math.floor(t);
         t = t - i;
         
@@ -110,10 +113,12 @@ public class Road {
         double x3 = myPoints.get(i++);
         double y3 = myPoints.get(i++);
         
-        double[] p = new double[2];
+        double[] p = new double[3];
 
         p[0] = b(0, t) * x0 + b(1, t) * x1 + b(2, t) * x2 + b(3, t) * x3;
-        p[1] = b(0, t) * y0 + b(1, t) * y1 + b(2, t) * y2 + b(3, t) * y3;        
+        
+        p[2] = b(0, t) * y0 + b(1, t) * y1 + b(2, t) * y2 + b(3, t) * y3;   
+        p[1] = terrain.altitude(p[0], p[2]) + 0.1;
         
         return p;
     }
@@ -145,6 +150,35 @@ public class Road {
         // this should never happen
         throw new IllegalArgumentException("" + i);
     }
+    
+    
+    /**
+     * Calculates the 
+     */
+    public double[] normalVector(double t, Terrain terrain) {
+    	double[] n = point(t, terrain);
+        double x = Math.sqrt(n[1] * n[1] + n[0] * n[0]);
+        n[1] = (n[1] / x);
+        n[0] = (n[0] /x);
+		return n;
+    }
+    
+    public void displayRoad(GL2 gl, Terrain terrain, Texture[] textures) {
+    	
+    	gl.glLineWidth(50);
 
+    	gl.glColor3f(1, 0, 0);
+    	
+    	gl.glBegin(GL2.GL_LINE_STRIP);
+
+        double tIncrement = 1.0/numPoints;
+
+        for (int i = 0; i < numPoints; i++) {        		
+        	double t = i * tIncrement;
+        	gl.glVertex3dv(point(t, terrain), 0);
+        }
+
+        gl.glEnd();
+    }
 
 }

@@ -21,7 +21,7 @@ public class Terrain {
 
     private static final int SLICES = 32;
     private static final int SAND = 0;
-    private static final int CACTUS = 1;
+    protected static final int CACTUS = 1;
 	private Dimension mySize;
     private double[][] myAltitude;
     private double[][] myNormals;
@@ -252,7 +252,7 @@ public class Terrain {
 
         float matAmbAndDif[] = {1.0f, .85f, .5f, 1.0f};
         float matSpec[] = { .0f, .5f, 1.0f, 1.0f };
-        float matShine[] = { 50.0f };
+        float matShine[] = { 0.0f };
         float emm[] = {0.0f, 0.0f, 0.0f, 1.0f};
 //
 //        // Material properties of teapot
@@ -261,13 +261,15 @@ public class Terrain {
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine,0);
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_EMISSION, emm,0);
 
-        gl.glMaterialf(GL2.GL_FRONT, GL2.GL_SHININESS, 40);	// phong
+        gl.glMaterialf(GL2.GL_FRONT, GL2.GL_SHININESS, 80);	// phong
 
         // Specify how texture values combine with current surface color values.
     	gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
-
+    	
+    	
     	drawTerrain(gl, textures);
     	drawTrees(gl, textures);
+    	drawRoads(gl, textures);
     }
 
 	public void drawTerrain(GL2 gl, Texture[] textures) {
@@ -299,6 +301,27 @@ public class Terrain {
         }
         gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
         gl.glEnd();
+        
+        
+//        gl.glColor4d(0, 0, 0, 1); // color
+//        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINES);
+//        gl.glBegin(GL2.GL_LINE_STRIP);
+//        
+//        size = this.size();
+//        height = size.height;
+//        width = size.width;
+//        count = 0;
+//        for (int z = 0; z < height - 1; z++){
+//        	for (int x = 0; x < width - 1; x+=1) {
+//
+//        		gl.glVertex3d( x, this.altitude(x, z), z ); //vertex 1
+//                gl.glVertex3d( x, this.altitude(x, z+1), z+1 ); //vertex 2
+//                gl.glVertex3d( x+1, this.altitude(x+1, z), z ); //vertex 3
+//                gl.glVertex3d( x+1, this.altitude(x+1, z+1), z+1 ); //vertex 4
+//                count += 2;
+//        	}
+//        }
+//        gl.glEnd();
 	}
 
 	public void drawTrees(GL2 gl, Texture[] textures) {
@@ -352,5 +375,11 @@ public class Terrain {
         }
         gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 
+	}
+	
+	public void drawRoads(GL2 gl, Texture[] textures) {
+		for (Road r : myRoads) {
+			r.displayRoad(gl, this, textures);
+		}
 	}
 }
