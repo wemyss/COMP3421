@@ -6,9 +6,9 @@ import com.jogamp.opengl.util.gl2.GLUT;
 
 public class Lighting {
 	
-	private float a = 0.7f; // Ambient white light intensity.
-	private float d = 0.9f; // Diffuse white light intensity
-	private float s = 0.3f; // Specular white light intensity.
+	private float a = 0.4f; // Ambient white light intensity.
+	private float d = 0.5f; // Diffuse white light intensity
+	private float s = 0.9f; // Specular white light intensity.
 	
 	private float g = 0.2f; // Global Ambient intensity
 	private int localViewer = 0; // Local viewpoint?

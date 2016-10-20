@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.glu.GLU;
@@ -194,7 +195,7 @@ public class Terrain {
     		z = 0;
     	}
 
-    	System.out.format("x: %f z: %f\n", x, z);
+//    	System.out.format("x: %f z: %f\n", x, z);
     	if (x % 1 != 0 && z % 1 != 0){
     		int x1 = (int) Math.floor(x);
     		int x2 = (int) Math.ceil(x);
@@ -253,7 +254,7 @@ public class Terrain {
 
         float matAmbAndDif[] = {1.0f, .85f, .5f, 1.0f};
         float matSpec[] = { .0f, .5f, 1.0f, 1.0f };
-        float matShine[] = { 1.0f };
+        float matShine[] = { 50.0f };
         float emm[] = {0.0f, 0.0f, 0.0f, 1.0f};
 //
 //        // Material properties of teapot
@@ -273,7 +274,12 @@ public class Terrain {
 
 	public void drawTerrain(GL2 gl, Texture[] textures) {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[SAND].getTextureId());
+		
+//		gl.glColor4d(0, 0, 0, 1); // color
+//    	gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINES);
+		
         gl.glBegin(GL2.GL_TRIANGLE_STRIP);
+        
         Dimension size = this.size();
         int height = size.height;
         int width = size.width;

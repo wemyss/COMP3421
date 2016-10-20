@@ -31,10 +31,10 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     private String cactusFileExt = "bmp";
     private Texture textures[];
 
-    private double x = -4.5;
-    private double y = -3;
-    private double z = -10;
-    private int angle = 0;
+    private double x = 2.57;
+    private double y = -3.0;
+    private double z = 4.16;
+    private int angle = 140;
 
     public Game(Terrain terrain) {
     	super("Assignment 2");
@@ -92,6 +92,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     	gl.glRotated (angle, 0, 1, 0);	// Pan left/right
     	y = -this.myTerrain.altitude(-x, -z) - 3;
     	gl.glTranslated(x, y, z);	 	// Move camera back
+//    	System.out.println("x: " + x + " y: " + y + " z: " + z + " angle: " + angle);
 
     	gl.glClearColor(1.0f, 0.71f, 0.58f, 1);
     	gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
