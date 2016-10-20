@@ -5,12 +5,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.glu.GLUquadric;
-import com.jogamp.opengl.util.gl2.GLUT;
 
 
 
@@ -318,15 +316,17 @@ public class Terrain {
         	gl.glBegin(GL2.GL_QUAD_STRIP);{
     	        for(int i=0; i<= SLICES; i++){
     	        	double angle0 = i*angleIncrement;
-    	        	double angle1 = (i+1)*angleIncrement;
     	        	double xPos0 = Math.cos(angle0);
     	        	double zPos0 = Math.sin(angle0);
     	        	double sCoord = 2.0/SLICES * i * 2; //Or * 2 to repeat label
-
+    	        	
+    	        	double[] normal = {xPos0,0,zPos0};
+    	        	normal = Utils.normalise(normal);
+    	        	gl.glNormal3d(normal[0], normal[1], normal[2]);
     	        	gl.glTexCoord2d(sCoord,1);
-    	        	gl.glVertex3d(xPos0*0.3+pos[0],pos[1],zPos0*0.3+pos[2]);
+    	        	gl.glVertex3d(xPos0*0.2+pos[0],pos[1],zPos0*0.2+pos[2]);
     	        	gl.glTexCoord2d(sCoord,0);
-    	        	gl.glVertex3d(xPos0*0.3+pos[0],pos[1]+height,zPos0*0.3+pos[2]);
+    	        	gl.glVertex3d(xPos0*0.2+pos[0],pos[1]+height,zPos0*0.2+pos[2]);
     	        }
 
             }gl.glEnd();
@@ -345,8 +345,8 @@ public class Terrain {
             GLUquadric sphere = glu.gluNewQuadric();
             //glu.gluQuadricDrawStyle(sphere, GLU.GLU_FILL);
             glu.gluQuadricTexture(sphere, true);
-            //glu.gluQuadricNormals(sphere, GLU.GLU_SMOOTH);
-            glu.gluSphere(sphere, 0.3, SLICES, 25);
+            glu.gluQuadricNormals(sphere, GLU.GLU_SMOOTH);
+            glu.gluSphere(sphere, 0.2, SLICES, 25);
      	    gl.glPopAttrib();
      	    gl.glPopMatrix();
         }

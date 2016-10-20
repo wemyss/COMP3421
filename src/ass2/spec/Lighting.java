@@ -34,7 +34,7 @@ public class Lighting {
     }
     
     private void drawAndPositionLights(GL2 gl, float[] sunDirection){
-//    	float lightPos0[] = { 0.0f, 10.0f, 0.0f, 0 };
+//    	float lightPos0[] = { 0.0f, 0.0f, 10.0f, 0 };
     	float lightPos0[] = { sunDirection[0], sunDirection[1], sunDirection[2], 0};
     	// Light0 positioned 
     	// sphere (positional light)

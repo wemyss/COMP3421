@@ -90,9 +90,10 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     	this.myTerrain.setLighting(gl);
 
     	gl.glRotated (angle, 0, 1, 0);	// Pan left/right
-    	y = -this.myTerrain.altitude(-x, -z) - 3;
+    	y = -this.myTerrain.altitude(-x, -z) - 2;
     	gl.glTranslated(x, y, z);	 	// Move camera back
-//    	System.out.println("x: " + x + " y: " + y + " z: " + z + " angle: " + angle);
+    	
+    	System.out.println("x: " + x + " y: " + y + " z: " + z + " angle: " + angle);
 
     	gl.glClearColor(1.0f, 0.71f, 0.58f, 1);
     	gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
