@@ -30,7 +30,6 @@ public class Terrain {
     private float[] mySunlight;
     
     
-    
     /**
      * Create a new terrain
      *
@@ -43,8 +42,6 @@ public class Terrain {
         myTrees = new ArrayList<Tree>();
         myRoads = new ArrayList<Road>();
         mySunlight = new float[3];
-        
-        
     }
     
     public Terrain(Dimension size) {
@@ -134,6 +131,22 @@ public class Terrain {
      */
     public double altitude(double x, double z) {
     	double altitude = 0;
+    	Dimension size = size();
+    	// ensure parameters are within bounds of dimension
+    	if (x > size.getWidth() - 1){
+    		x = size.getWidth() - 1;
+    	}
+    	if (z > size.getHeight() - 1){
+    		z = size.getHeight() - 1;
+    	}
+    	if (x < 0){
+    		x = 0;
+    	}
+    	if (z < 0){
+    		z = 0;
+    	}
+    	
+    	System.out.format("x: %f z: %f\n", x, z);
     	if (x % 1 != 0 && z % 1 != 0){
     		int x1 = (int) Math.floor(x);
     		int x2 = (int) Math.ceil(x);
@@ -182,7 +195,6 @@ public class Terrain {
         Road road = new Road(width, spine);
         myRoads.add(road);        
     }
-
 
     public void draw(GLAutoDrawable drawable, Texture[] textures) {
     	GL2 gl = drawable.getGL().getGL2();

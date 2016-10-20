@@ -93,6 +93,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 
 //    	this.myLighting.setLighting(gl);
     	gl.glRotated (angle, 0, 1, 0);	// Pan left/right
+    	y = -this.myTerrain.altitude(-x, -z) - 3;
     	gl.glTranslated(x, y, z);	 	// Move camera back
     	
     	gl.glClearColor(1.0f, 0.71f, 0.58f, 1);
@@ -144,7 +145,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         // y = near * tan (30);
         // x = aspect * y
 
-        gl.glFrustum(-2.15, 2.15, -2.15, 2.15, 2, 20);
+        gl.glFrustum(-1, 1, -1, 1, 2, 20);
 	}
 
 	@Override
