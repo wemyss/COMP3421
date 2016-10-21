@@ -214,7 +214,6 @@ public class Road {
     public void drawSelf(GL2 gl, Terrain terrain, Texture[] textures) {
     	final double halfWidth = myWidth/2;
     	
-    	gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[Terrain.CACTUS].getTextureId());
     	gl.glBegin(GL2.GL_TRIANGLE_STRIP);
     	
     	for(double i = 0; i < size(); i += 0.05) {	// adjust increment to change smoothness

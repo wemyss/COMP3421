@@ -22,6 +22,7 @@ public class Terrain {
     private static final int SLICES = 32;
     private static final int SAND = 0;
     protected static final int CACTUS = 1;
+    protected static final int ROAD = 2;
 	private Dimension mySize;
     private double[][] myAltitude;
     private double[][] myNormals;
@@ -378,8 +379,10 @@ public class Terrain {
 	}
 	
 	public void drawRoads(GL2 gl, Texture[] textures) {
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[ROAD].getTextureId());
 		for (Road r : myRoads) {
 			r.drawSelf(gl, this, textures);
 		}
+        gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}
 }
