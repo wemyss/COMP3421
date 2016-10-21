@@ -14,7 +14,7 @@ public class Road {
 
     private List<Double> myPoints;
     private double myWidth;
-    private final int numPoints = 20;
+    private final double ROAD_CLEARANCE = 0.0001;	// Gotta have this so the road doesn't sink
     
     /** 
      * Create a new road starting at the specified point
@@ -150,35 +150,99 @@ public class Road {
         // this should never happen
         throw new IllegalArgumentException("" + i);
     }
+
+    private double bTangent(int i, double t) {
+    	 switch(i) {
+	         case 0:
+	             return Math.pow(1-t, 2);
+	
+	         case 1:
+	             return 2 * (1-t) * t;
+	             
+	         case 2:
+	             return Math.pow(t, 2);
+         }
+         
+         throw new IllegalArgumentException("" + i);
+    }
+    
+    /**
+     * 
+     * Return the 2D tangent vector of the Bezier curve at instant t
+     * 
+     * @param t
+     * @return
+     */
+    public double[] tangent2d(double t) {
+    	int i = (int)Math.floor(t);
+        t = t - i;
+        
+        i *= 6;
+        
+        double x0 = myPoints.get(i++);
+        double y0 = myPoints.get(i++);
+        double x1 = myPoints.get(i++);
+        double y1 = myPoints.get(i++);
+        double x2 = myPoints.get(i++);
+        double y2 = myPoints.get(i++);
+        double x3 = myPoints.get(i++);
+        double y3 = myPoints.get(i++);
+        
+        double[] tangent = new double[2];
+        // figure out my direction vector
+        tangent[0] = bTangent(0, t) * (x1 - x0) + bTangent(1, t) * (x2 - x1) + bTangent(2, t) * (x3 - x2);
+        tangent[1] = bTangent(0, t) * (y1 - y0) + bTangent(1, t) * (y2 - y1) + bTangent(2, t) * (y3 - y2);  
+       
+    	return tangent;	
+    }
     
     
     /**
-     * Calculates the 
+     * Creates the 2d normal vector to the bezier curve at the given position.
+     * Algorithm based off of the response at:
+     * http://stackoverflow.com/questions/1243614/how-do-i-calculate-the-normal-vector-of-a-line-segment
      */
-    public double[] normalVector(double t, Terrain terrain) {
-    	double[] n = point(t, terrain);
-        double x = Math.sqrt(n[1] * n[1] + n[0] * n[0]);
-        n[1] = (n[1] / x);
-        n[0] = (n[0] /x);
-		return n;
+    private double[] get2dNormal(double i) {
+    	double[] tangent = tangent2d(i);
+    	double norm = Math.pow(tangent[0], 2) + Math.pow(tangent[1], 2);
+		norm = Math.sqrt(norm);
+		
+    	double[] norm2d = new double[]{-tangent[1]/norm, tangent[0]/norm};
+		return norm2d;
     }
     
-    public void displayRoad(GL2 gl, Terrain terrain, Texture[] textures) {
+    public void drawSelf(GL2 gl, Terrain terrain, Texture[] textures) {
+    	final double halfWidth = myWidth/2;
     	
-    	gl.glLineWidth(50);
-
-    	gl.glColor3f(1, 0, 0);
+    	gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[Terrain.CACTUS].getTextureId());
+    	gl.glBegin(GL2.GL_TRIANGLE_STRIP);
     	
-    	gl.glBegin(GL2.GL_LINE_STRIP);
+    	for(double i = 0; i < size(); i += 0.05) {	// adjust increment to change smoothness
+    		
+    		double[] p = point(i, terrain);
+    		double[] norm = get2dNormal(i);
+    		
+    		// Scale halfWidth by the normal vector
+    		norm[0] *= halfWidth;
+    		norm[1] *= halfWidth;
 
-        double tIncrement = 1.0/numPoints;
-
-        for (int i = 0; i < numPoints; i++) {        		
-        	double t = i * tIncrement;
-        	gl.glVertex3dv(point(t, terrain), 0);
-        }
-
-        gl.glEnd();
+    		gl.glNormal3d(0, 1, 0);
+    		gl.glTexCoord2d(p[0] - norm[0], p[2] - norm[1]); 
+    		gl.glVertex3d(
+    				p[0] - norm[0], 
+    				p[1] + ROAD_CLEARANCE, 
+    				p[2] - norm[1]
+    		);
+    		gl.glTexCoord2d(p[0] + norm[0], p[2] + norm[1]); 
+    		gl.glVertex3d(
+    				p[0] + norm[0], 
+    				p[1] + ROAD_CLEARANCE, 
+    				p[2] + norm[1]
+    		);
+    		
+    	}
+    	
+    	gl.glEnd();
     }
 
 }

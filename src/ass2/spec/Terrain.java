@@ -379,7 +379,7 @@ public class Terrain {
 	
 	public void drawRoads(GL2 gl, Texture[] textures) {
 		for (Road r : myRoads) {
-			r.displayRoad(gl, this, textures);
+			r.drawSelf(gl, this, textures);
 		}
 	}
 }

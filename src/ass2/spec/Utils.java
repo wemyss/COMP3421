@@ -6,24 +6,24 @@ public class Utils {
      * 
      */
 
-	public static double getMagnitude(double [] n){
+	public static double getMagnitude(double[] n){
     	double mag = n[0]*n[0] + n[1]*n[1] + n[2]*n[2];
     	mag = Math.sqrt(mag);
     	return mag;
     }
     
-    public static double [] normalise(double [] n){
+    public static double[] normalise(double[] n){
     	double  mag = getMagnitude(n);
     	double norm[] = {n[0]/mag,n[1]/mag,n[2]/mag};
     	return norm;
     }
     
-    public static double [] cross(double u [], double v[]){
+    public static double [] cross(double[] u, double[] v){
     	double crossProduct[] = new double[3];
     	crossProduct[0] = u[1]*v[2] - u[2]*v[1];
     	crossProduct[1] = u[2]*v[0] - u[0]*v[2];
     	crossProduct[2] = u[0]*v[1] - u[1]*v[0];
-    	//System.out.println("CP " + crossProduct[0] + " " +  crossProduct[1] + " " +  crossProduct[2]);
+    	System.out.println("CP " + crossProduct[0] + " " +  crossProduct[1] + " " +  crossProduct[2]);
     	return crossProduct;
     }
     
