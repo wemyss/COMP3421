@@ -35,13 +35,15 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     private String roadFileExt = "jpg";
     private String rockFileName = "textures/rock.jpg";
     private String rockFileExt = "jpg";
+    private String barkFileName = "textures/bark.jpg";
+    private String barkFileExt = "jpg";
     private Texture textures[];
 
 
     public Game(Terrain terrain) {
     	super("Assignment 2");
         myTerrain = terrain;
-        textures = new Texture[4];
+        textures = new Texture[5];
         myAvatar = new Avatar();
     }
 
@@ -125,6 +127,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         textures[1] = new Texture(gl, cactusFileName, cactusFileExt);
         textures[2] = new Texture(gl, roadFileName, roadFileExt);
         textures[3] = new Texture(gl, rockFileName, rockFileExt);
+        textures[4] = new Texture(gl, barkFileName, barkFileExt);
         
         Iterator<Other> otherIt = myTerrain.others().iterator();
         while (otherIt.hasNext()){

@@ -23,12 +23,14 @@ public class Terrain {
     private static final int SAND = 0;
     protected static final int CACTUS = 1;
     protected static final int ROAD = 2;
+    protected static final int BARK = 4;
 	private Dimension mySize;
     private double[][] myAltitude;
     private double[][] myNormals;
     private List<Tree> myTrees;
     private List<Road> myRoads;
     private List<Other> myOthers;
+    private List<FractalTree> myFractalTrees;
     private float[] mySunlight;
     protected int sunAngle;
     private Lighting myLighting;
@@ -49,6 +51,7 @@ public class Terrain {
         mySunlight = new float[3];
         myLighting = new Lighting();
         myOthers = new ArrayList<Other>();
+        myFractalTrees = new ArrayList<FractalTree>();
         sunAngle = 0;
     }
 
@@ -70,6 +73,10 @@ public class Terrain {
     
     public List<Other> others() {
         return myOthers;
+    }
+    
+    public List<FractalTree> fractalTrees() {
+        return myFractalTrees;
     }
 
     public float[] getSunlight() {
@@ -239,6 +246,19 @@ public class Terrain {
         Other other = new Other(x, y, z);
         myOthers.add(other);
     }
+    
+    /**
+     * Add a fractal tree at the specified (x,z) point.
+     * The others y coordinate is calculated from the altitude of the terrain at that point.
+     *
+     * @param x
+     * @param z
+     */
+    public void addFTree(double x, double z, int iter, String rule) {
+        double y = altitude(x, z);
+        FractalTree fractalTree = new FractalTree(x, y, z, iter, rule);
+        myFractalTrees.add(fractalTree);
+    }
 
     public void setLighting(GL2 gl) {
     	this.myLighting.setLighting(gl, mySunlight, sunAngle);
@@ -268,6 +288,7 @@ public class Terrain {
     	drawTrees(gl, textures);
     	drawRoads(gl, textures);
     	drawOthers(gl, textures);
+    	drawFractalTrees(gl, textures);
     }
 
 	public void drawTerrain(GL2 gl, Texture[] textures) {
@@ -370,6 +391,14 @@ public class Terrain {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[CACTUS].getTextureId());
 		for (Other o : myOthers) {
 			o.drawSelf(gl, textures);
+		}
+        gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+	}
+	
+	public void drawFractalTrees(GL2 gl, Texture[] textures){
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[BARK].getTextureId());
+		for (FractalTree t : myFractalTrees){
+			t.drawSelf(gl);
 		}
         gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}
