@@ -23,7 +23,6 @@ public class Utils {
     	crossProduct[0] = u[1]*v[2] - u[2]*v[1];
     	crossProduct[1] = u[2]*v[0] - u[0]*v[2];
     	crossProduct[2] = u[0]*v[1] - u[1]*v[0];
-    	System.out.println("CP " + crossProduct[0] + " " +  crossProduct[1] + " " +  crossProduct[2]);
     	return crossProduct;
     }
     

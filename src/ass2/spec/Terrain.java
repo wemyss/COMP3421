@@ -105,45 +105,16 @@ public class Terrain {
     	int count = 0;
     	for (int z = 0; z < mySize.height-1; ++z) {
     		for (int x = 0; x < mySize.width-1; ++x) {
-    			double[] v1 =  new double[3];
-    			double[] v2 =  new double[3];
-
-    			// TRIANGLE 1
-    			// p2 - p1
-    			v1[0] = 0;
-    			v1[1] = myAltitude[x][z+1] - myAltitude[x][z];
-    			v1[2] = 1;
-
-    			// p3 - p1
-    			v2[0] = 1;
-    			v2[1] = myAltitude[x+1][z] - myAltitude[x][z];
-    			v2[2] = 0;
-
-    			setNormal(v1, v2, count);
+    			double[] p0 = {x, altitude(x, z), z};
+    			double[] p1 = {x, altitude(x, z+1), z+1};
+    			double[] p2 = {x+1, altitude(x+1, z), z};
+    			double[] p3 = {x+1, altitude(x+1, z+1), z+1};
+    			myNormals[count] = Utils.getNormal(p0, p1, p2);
     			count++;
-
-
-    			// TRIANGLE 2
-    			// p2 - p1
-    			v1[0] = 1;
-    			v1[1] = myAltitude[x][z+1] - myAltitude[x+1][z+1];
-    			v1[2] = 0;
-
-    			// p3 - p1
-    			v2[0] = 0;
-    			v2[1] = myAltitude[x+1][z] - myAltitude[x+1][z+1];
-    			v2[2] = 1;
-
-    			setNormal(v1, v2, count);
+    			myNormals[count] = Utils.getNormal(p1, p3, p2);
     			count++;
     		}
     	}
-    }
-
-    private void setNormal(double[] v1, double[] v2, int pos) {
-    	myNormals[pos][0] = v1[1]*v2[2] - v1[2]*v2[1];
-		myNormals[pos][1] = v1[2]*v2[0] - v1[0]*v2[2];
-		myNormals[pos][2] = v1[0]*v2[1] - v1[1]*v2[0];
     }
 
     /**
@@ -200,7 +171,7 @@ public class Terrain {
     		int x2 = (int) Math.ceil(x);
     		double leftAltitude = altitude(x1, z);
     		double rightAltitude = altitude(x2, z);
-    		altitude = (x - x1)/(x2 - x1) * leftAltitude + (x2 - x)/(x2 - x1) * rightAltitude;
+    		altitude = (x - x1)/(x2 - x1) * rightAltitude + (x2 - x)/(x2 - x1) * leftAltitude;
     	} else if (x % 1 != 0) {
     		int x1 = (int) Math.floor(x);
     		int x2 = (int) Math.ceil(x);
@@ -279,13 +250,13 @@ public class Terrain {
 //		gl.glColor4d(0, 0, 0, 1); // color
 //    	gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINES);
 		
-        gl.glBegin(GL2.GL_TRIANGLE_STRIP);
         
         Dimension size = this.size();
         int height = size.height;
         int width = size.width;
         int count = 0;
         for (int z = 0; z < height - 1; z++){
+        	gl.glBegin(GL2.GL_TRIANGLE_STRIP);
         	for (int x = 0; x < width - 1; x+=1) {
         		gl.glNormal3dv(myNormals[count], 0);
         		gl.glTexCoord2d(0.0, 0.0);
@@ -294,14 +265,15 @@ public class Terrain {
                 gl.glVertex3d( x, this.altitude(x, z+1), z+1 ); //vertex 2
                 gl.glTexCoord2d(1.0, 0.0);
                 gl.glVertex3d( x+1, this.altitude(x+1, z), z ); //vertex 3
-                gl.glNormal3dv(myNormals[count], 0);
+                gl.glNormal3dv(myNormals[count+1], 0);
                 gl.glTexCoord2d(1.0, 1.0);
                 gl.glVertex3d( x+1, this.altitude(x+1, z+1), z+1 ); //vertex 4
                 count += 2;
         	}
+        	gl.glEnd();
         }
         gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
-        gl.glEnd();
+        
         
         
 //        gl.glColor4d(0, 0, 0, 1); // color
@@ -328,7 +300,7 @@ public class Terrain {
 	public void drawTrees(GL2 gl, Texture[] textures) {
 		double angleIncrement = (Math.PI * 2.0) / SLICES;
 		double zFront = -1;
-        double height = 1;
+        double height = 2;
         List<Tree> trees = trees();
         GLU glu = new GLU();
         Iterator<Tree> treeIt = trees.iterator();
@@ -348,9 +320,9 @@ public class Terrain {
     	        	normal = Utils.normalise(normal);
     	        	gl.glNormal3d(normal[0], normal[1], normal[2]);
     	        	gl.glTexCoord2d(sCoord,1);
-    	        	gl.glVertex3d(xPos0*0.2+pos[0],pos[1],zPos0*0.2+pos[2]);
+    	        	gl.glVertex3d(xPos0*0.2+pos[0],pos[1] - 1,zPos0*0.2+pos[2]);
     	        	gl.glTexCoord2d(sCoord,0);
-    	        	gl.glVertex3d(xPos0*0.2+pos[0],pos[1]+height,zPos0*0.2+pos[2]);
+    	        	gl.glVertex3d(xPos0*0.2+pos[0],pos[1]+height - 1,zPos0*0.2+pos[2]);
     	        }
 
             }gl.glEnd();
@@ -364,7 +336,7 @@ public class Terrain {
 //            gl.glPopMatrix();
 
             gl.glPushMatrix();
-     	   	gl.glTranslated(pos[0], pos[1]+height, pos[2]);
+     	   	gl.glTranslated(pos[0], pos[1]+height-1, pos[2]);
      	    gl.glPushAttrib(gl.GL_ALL_ATTRIB_BITS);
             GLUquadric sphere = glu.gluNewQuadric();
             //glu.gluQuadricDrawStyle(sphere, GLU.GLU_FILL);

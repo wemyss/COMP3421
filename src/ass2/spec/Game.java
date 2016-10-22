@@ -150,8 +150,6 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
-
-		System.out.println("SAM");
 	}
 
 	@Override
