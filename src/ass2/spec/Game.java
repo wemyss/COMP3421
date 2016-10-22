@@ -33,13 +33,17 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     private String cactusFileExt = "png";
     private String roadFileName = "textures/dirt.png";
     private String roadFileExt = "png";
+    private String t1FileName = "textures/t1_2.png";
+    private String t1FileExt = "png";
+    private String t2FileName = "textures/t2.png";
+    private String t2FileExt = "png";
     private Texture textures[];
 
 
     public Game(Terrain terrain) {
     	super("Assignment 2");
         myTerrain = terrain;
-        textures = new Texture[3];
+        textures = new Texture[5];
         myAvatar = new Avatar();
     }
 
@@ -88,8 +92,8 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     	gl.glLoadIdentity();
     	gl.glClearColor(1.0f, 0.71f, 0.58f, 1);
     	gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
-    	
-    	myAvatar.drawSelf(gl, myTerrain, myAvatar.isThirdPerson);
+
+    	myAvatar.drawSelf(gl, myTerrain, myAvatar.isThirdPerson, textures);
     	myTerrain.setLighting(gl);
     	myTerrain.draw(drawable, textures);
 	}
@@ -117,10 +121,13 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         gl.glCullFace(GL2.GL_BACK);
 
         gl.glEnable(GL.GL_TEXTURE_2D);
-
+        
+        // setup all our textures for the game
         textures[0] = new Texture(gl, sandFileName, sandFileExt);
         textures[1] = new Texture(gl, cactusFileName, cactusFileExt);
         textures[2] = new Texture(gl, roadFileName, roadFileExt);
+        textures[3] = new Texture(gl, t1FileName, t1FileExt);
+        textures[4] = new Texture(gl, t2FileName, t2FileExt);
         
         Iterator<Other> otherIt = myTerrain.others().iterator();
         while (otherIt.hasNext()){
@@ -185,6 +192,16 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 				 break;
 			 case KeyEvent.VK_3:
 				 myAvatar.isThirdPerson = true;
+				 break;
+			 case KeyEvent.VK_COMMA:
+				 if(myTerrain.sunAngle > -40) {
+					 myTerrain.sunAngle -= 1;
+				 }
+				 break;
+			 case KeyEvent.VK_PERIOD:
+				 if(myTerrain.sunAngle < 40) {
+					 myTerrain.sunAngle += 1;
+				 }
 				 break;
 			 default:
 				 break;

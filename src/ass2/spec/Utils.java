@@ -1,8 +1,9 @@
 package ass2.spec;
 
+
 public class Utils {
 	/* 
-     * Some maths utility functions
+     * Some maths utility functions to make our lifes a little easier
      * 
      */
 

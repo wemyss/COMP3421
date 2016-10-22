@@ -30,6 +30,7 @@ public class Terrain {
     private List<Road> myRoads;
     private List<Other> myOthers;
     private float[] mySunlight;
+    protected int sunAngle;
     private Lighting myLighting;
 
 
@@ -48,6 +49,7 @@ public class Terrain {
         mySunlight = new float[3];
         myLighting = new Lighting();
         myOthers = new ArrayList<Other>();
+        sunAngle = 0;
     }
 
     public Terrain(Dimension size) {
@@ -107,6 +109,10 @@ public class Terrain {
         }
     }
 
+    /**
+     * Sets the normals array for the faces of the terrain.
+     * Called once on initialisation of the game.
+     */
     public void setNormals() {
     	int count = 0;
     	for (int z = 0; z < mySize.height-1; ++z) {
@@ -171,7 +177,7 @@ public class Terrain {
     		z = 0;
     	}
 
-//    	System.out.format("x: %f z: %f\n", x, z);
+    	// Interpolate altitude when not integer coordinates, else just get integer coordinates
     	if (x % 1 != 0 && z % 1 != 0){
     		int x1 = (int) Math.floor(x);
     		int x2 = (int) Math.ceil(x);
@@ -235,7 +241,7 @@ public class Terrain {
     }
 
     public void setLighting(GL2 gl) {
-    	this.myLighting.setLighting(gl, mySunlight);
+    	this.myLighting.setLighting(gl, mySunlight, sunAngle);
     }
 
     public void draw(GLAutoDrawable drawable, Texture[] textures) {
@@ -245,8 +251,8 @@ public class Terrain {
         float matSpec[] = { .0f, .5f, 1.0f, 1.0f };
         float matShine[] = { 0.0f };
         float emm[] = {0.0f, 0.0f, 0.0f, 1.0f};
-//
-//        // Material properties of teapot
+
+        // Material properties
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif,0);
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec,0);
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine,0);
@@ -257,7 +263,7 @@ public class Terrain {
         // Specify how texture values combine with current surface color values.
     	gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
     	
-    	
+    	// Draw terrain and terrain objects
     	drawTerrain(gl, textures);
     	drawTrees(gl, textures);
     	drawRoads(gl, textures);
@@ -294,28 +300,7 @@ public class Terrain {
         	gl.glEnd();
         }
         gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
-        
-        
-        
-//        gl.glColor4d(0, 0, 0, 1); // color
-//        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINES);
-//        gl.glBegin(GL2.GL_LINE_STRIP);
-//        
-//        size = this.size();
-//        height = size.height;
-//        width = size.width;
-//        count = 0;
-//        for (int z = 0; z < height - 1; z++){
-//        	for (int x = 0; x < width - 1; x+=1) {
-//
-//        		gl.glVertex3d( x, this.altitude(x, z), z ); //vertex 1
-//                gl.glVertex3d( x, this.altitude(x, z+1), z+1 ); //vertex 2
-//                gl.glVertex3d( x+1, this.altitude(x+1, z), z ); //vertex 3
-//                gl.glVertex3d( x+1, this.altitude(x+1, z+1), z+1 ); //vertex 4
-//                count += 2;
-//        	}
-//        }
-//        gl.glEnd();
+
         gl.glPopMatrix();
 	}
 
@@ -327,6 +312,8 @@ public class Terrain {
         GLU glu = new GLU();
         Iterator<Tree> treeIt = trees.iterator();
         gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[CACTUS].getTextureId());
+        // Iterate over each cactus/tree and calculate it's position on the map the 
+        // draw it using a cylinder and a sphere.
         while (treeIt.hasNext()){
         	//draw trunk
         	Tree tree = treeIt.next();
@@ -350,12 +337,6 @@ public class Terrain {
             }gl.glEnd();
 
             //draw top
-//            gl.glPushMatrix();
-//     	   	gl.glTranslated(pos[0], pos[1]+height, pos[2]);
-//     	    gl.glPushAttrib(gl.GL_ALL_ATTRIB_BITS);
-//     	   	glut.glutSolidSphere(0.3, 50, 50);
-//     	    gl.glPopAttrib();
-//            gl.glPopMatrix();
 
             gl.glPushMatrix();
      	   	gl.glTranslated(pos[0], pos[1]+height-1, pos[2]);
@@ -372,6 +353,11 @@ public class Terrain {
 
 	}
 	
+	/**
+	 * For each road, call it's draw function
+	 * @param gl
+	 * @param textures
+	 */
 	public void drawRoads(GL2 gl, Texture[] textures) {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[ROAD].getTextureId());
 		for (Road r : myRoads) {
@@ -383,7 +369,7 @@ public class Terrain {
 	public void drawOthers(GL2 gl, Texture[] textures){
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[ROAD].getTextureId());
 		for (Other o : myOthers) {
-			o.drawSelf(gl);
+			o.drawSelf(gl, textures);
 		}
         gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}
