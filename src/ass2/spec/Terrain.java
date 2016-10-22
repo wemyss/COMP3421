@@ -267,7 +267,7 @@ public class Terrain {
     	drawTerrain(gl, textures);
     	drawTrees(gl, textures);
     	drawRoads(gl, textures);
-    	//drawOthers(gl, textures);
+    	drawOthers(gl, textures);
     }
 
 	public void drawTerrain(GL2 gl, Texture[] textures) {

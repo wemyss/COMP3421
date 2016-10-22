@@ -59,14 +59,14 @@ public class Avatar {
 
 			gl.glEnable(GL2.GL_TEXTURE_GEN_S); //enable texture coordinate generation
 		    gl.glEnable(GL2.GL_TEXTURE_GEN_T);
-			gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[4].getTextureId());
-	    	glut.glutSolidSphere(0.15, 50, 40);
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[3].getTextureId());
+	    	glut.glutSolidSphere(0.12, 50, 40);
 
-
-	    	gl.glTranslated(0, 0.1, 0);
-	    	gl.glRotated(-90, 1, 0, 0);
-	    	gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[3].getTextureId());
-	    	glut.glutSolidCone(0.2, 0.1, 40, 40);
+//
+//	    	gl.glTranslated(0, 0.1, 0);
+//	    	gl.glRotated(-90, 1, 0, 0);
+//	    	gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[3].getTextureId());
+//	    	glut.glutSolidCone(0.2, 0.1, 40, 40);
 
 	    	gl.glDisable(GL2.GL_TEXTURE_GEN_S); //enable texture coordinate generation
 		    gl.glDisable(GL2.GL_TEXTURE_GEN_T);

@@ -33,17 +33,15 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     private String cactusFileExt = "png";
     private String roadFileName = "textures/dirt.png";
     private String roadFileExt = "png";
-    private String t1FileName = "textures/t1_2.png";
-    private String t1FileExt = "png";
-    private String t2FileName = "textures/t2.png";
-    private String t2FileExt = "png";
+    private String rockFileName = "textures/rock.jpg";
+    private String rockFileExt = "jpg";
     private Texture textures[];
 
 
     public Game(Terrain terrain) {
     	super("Assignment 2");
         myTerrain = terrain;
-        textures = new Texture[5];
+        textures = new Texture[4];
         myAvatar = new Avatar();
     }
 
@@ -126,8 +124,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         textures[0] = new Texture(gl, sandFileName, sandFileExt);
         textures[1] = new Texture(gl, cactusFileName, cactusFileExt);
         textures[2] = new Texture(gl, roadFileName, roadFileExt);
-        textures[3] = new Texture(gl, t1FileName, t1FileExt);
-        textures[4] = new Texture(gl, t2FileName, t2FileExt);
+        textures[3] = new Texture(gl, rockFileName, rockFileExt);
         
         Iterator<Other> otherIt = myTerrain.others().iterator();
         while (otherIt.hasNext()){
@@ -178,14 +175,6 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 			 case KeyEvent.VK_D:
 				 // Step right
 				 myAvatar.x -= CAMERA_ROTATION_RATE;
-				 break;
-			 case KeyEvent.VK_S:
-				 // Step down
-				 myAvatar.y += CAMERA_ROTATION_RATE;
-				 break;
-			 case KeyEvent.VK_W:
-				 // Step up
-				 myAvatar.y -= CAMERA_ROTATION_RATE;
 				 break;
 			 case KeyEvent.VK_1:
 				 myAvatar.isThirdPerson = false;
