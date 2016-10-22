@@ -12,8 +12,8 @@ import com.jogamp.opengl.GL2;
  */
 public class Road {
 
-    private List<Double> myPoints;
-    private double myWidth;
+    private List<Double> myPoints;					// points of the road
+    private double myWidth;							// width of the road
     private final double ROAD_CLEARANCE = 0.0001;	// Gotta have this so the road doesn't sink
     
     /** 
@@ -151,6 +151,13 @@ public class Road {
         throw new IllegalArgumentException("" + i);
     }
 
+    /**
+     * 
+     * Coefficents for the tangent to the curve
+     * @param i
+     * @param t
+     * @return
+     */
     private double bTangent(int i, double t) {
     	 switch(i) {
 	         case 0:
@@ -168,7 +175,7 @@ public class Road {
     
     /**
      * 
-     * Return the 2D tangent vector of the Bezier curve at instant t
+     * Return the 2D tangent to Bezier curve at some point
      * 
      * @param t
      * @return
@@ -219,8 +226,8 @@ public class Road {
         float matSpec[] = { .0f, .5f, 1.0f, 1.0f };
         float matShine[] = { 0.0f };
         float emm[] = {0.0f, 0.0f, 0.0f, 1.0f};
-//
-//        // Material properties of teapot
+
+        // Material properties
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif,0);
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec,0);
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine,0);
@@ -230,7 +237,7 @@ public class Road {
     	
     	gl.glBegin(GL2.GL_TRIANGLE_STRIP);
     	
-    	for (double i = 0; i < size(); i += 0.05) {	// adjust increment to change smoothness
+    	for (double i = 0; i < size(); i += 0.002) {	// adjust increment to change smoothness
     		
     		double[] p = point(i, terrain);
     		double[] norm = get2dNormal(i);
@@ -238,14 +245,18 @@ public class Road {
     		// Scale halfWidth by the normal vector
     		norm[0] *= halfWidth;
     		norm[1] *= halfWidth;
-
+    		
+    		
     		gl.glNormal3d(0, 1, 0);
+    		// Draw the left point
     		gl.glTexCoord2d(p[0] - norm[0], p[2] - norm[1]); 
     		gl.glVertex3d(
     				p[0] - norm[0], 
     				p[1] + ROAD_CLEARANCE, 
     				p[2] - norm[1]
     		);
+    		
+    		// Draw the right point
     		gl.glTexCoord2d(p[0] + norm[0], p[2] + norm[1]); 
     		gl.glVertex3d(
     				p[0] + norm[0], 

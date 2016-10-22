@@ -3,6 +3,12 @@ package ass2.spec;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.util.gl2.GLUT;
 
+/**
+ * Avatar
+ * 
+ * Contains the avatar object and draws the avatar at (0,0) if in 3rd person mode.
+ * Moves camera based on mode.
+ */
 public class Avatar {
 	protected double x = 2.57;
     protected double y = -3.0;
@@ -15,8 +21,10 @@ public class Avatar {
 	}
 
 	public void drawSelf(GL2 gl, Terrain terrain, boolean isThirdPerson, Texture[] textures) {
-		gl.glRotated (angle, 0, 1, 0);	// Pan left/right
+		gl.glRotated (angle, 0, 1, 0);
+		
 		if (isThirdPerson) {
+			// Move my camera behind the avatar
 			y = -terrain.altitude(-x, -z) - 1;
 			gl.glRotated (
 					-15,
@@ -29,14 +37,16 @@ public class Avatar {
 					-0.5,
 					-Math.cos(Math.toRadians(angle))*0.8
 			);
+			
+			// Make a little human head with a hat
 			gl.glPushMatrix();
 			GLUT glut = new GLUT();
 			float matAmbAndDif[] = {1f, 0f, .9f, 1.0f};
 	        float matSpec[] = { 0f, 1f, 0f, 1.0f };
 	        float matShine[] = { 50.0f };
 	        float emm[] = {0f, 1f, 0.6f, 1.0f};
-	//
-//	        // Material properties of teapot
+	        
+	        // Material properties
 	        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif,0);
 	        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec,0);
 	        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine,0);

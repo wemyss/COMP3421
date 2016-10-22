@@ -121,7 +121,8 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         gl.glCullFace(GL2.GL_BACK);
 
         gl.glEnable(GL.GL_TEXTURE_2D);
-
+        
+        // setup all our textures for the game
         textures[0] = new Texture(gl, sandFileName, sandFileExt);
         textures[1] = new Texture(gl, cactusFileName, cactusFileExt);
         textures[2] = new Texture(gl, roadFileName, roadFileExt);

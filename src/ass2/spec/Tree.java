@@ -1,8 +1,10 @@
 package ass2.spec;
 
 /**
- * COMMENT: Comment Tree 
- *
+ * Tree
+ * 
+ * This is a really simple tree that we put on top of the terrain.
+ * 
  * @author malcolmr
  */
 public class Tree {
