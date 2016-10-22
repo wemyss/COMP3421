@@ -24,6 +24,8 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 	private static final double CAMERA_ROTATION_RATE = 0.4;
 	private static final int ANGLE_ROTATION_RATE = 5;
     private Terrain myTerrain;
+    private Avatar myAvatar;
+
 
     private String sandFileName = "textures/sand.bmp";
     private String sandFileExt = "bmp";
@@ -33,15 +35,12 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     private String roadFileExt = "png";
     private Texture textures[];
 
-    private double x = 2.57;
-    private double y = -3.0;
-    private double z = 4.16;
-    private int angle = 140;
 
     public Game(Terrain terrain) {
     	super("Assignment 2");
         myTerrain = terrain;
         textures = new Texture[3];
+        myAvatar = new Avatar();
     }
 
     /**
@@ -89,18 +88,10 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     	gl.glLoadIdentity();
     	gl.glClearColor(1.0f, 0.71f, 0.58f, 1);
     	gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
-
-
-    	gl.glRotated (angle, 0, 1, 0);	// Pan left/right
-    	y = -this.myTerrain.altitude(-x, -z) - 2;
-    	gl.glTranslated(x, y, z);	 	// Move camera back
-//    	System.out.println("x: " + x + " y: " + y + " z: " + z + " angle: " + angle);
-
-    	this.myTerrain.setLighting(gl);
-
-
-//    	gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
-    	this.myTerrain.draw(drawable, textures);
+    	
+    	myAvatar.drawSelf(gl, myTerrain, myAvatar.isThirdPerson);
+    	myTerrain.setLighting(gl);
+    	myTerrain.draw(drawable, textures);
 	}
 
 	@Override
@@ -139,62 +130,66 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 	}
 
 	@Override
-	public void reshape(GLAutoDrawable drawable, int x, int y, int width,
-			int height) {
+	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
         GLU glu = new GLU();
         GL2 gl = drawable.getGL().getGL2();
-        
+
         if (height == 0) height = 1;
         float aspect = (float)width / height;
-      
+
         // Setup perspective projection, with aspect ratio matches viewport
         gl.glMatrixMode(gl.GL_PROJECTION);
-        gl.glLoadIdentity(); 
-        glu.gluPerspective(45.0, aspect, 0.1, 100.0); 
+        gl.glLoadIdentity();
+        glu.gluPerspective(45.0, aspect, 0.1, 100.0);
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
 			 case KeyEvent.VK_UP:
-				 z += CAMERA_ROTATION_RATE * Math.cos(Math.toRadians(angle));
-				 x -= CAMERA_ROTATION_RATE * Math.sin(Math.toRadians(angle));
+				 myAvatar.z += CAMERA_ROTATION_RATE * Math.cos(Math.toRadians(myAvatar.angle));
+				 myAvatar.x -= CAMERA_ROTATION_RATE * Math.sin(Math.toRadians(myAvatar.angle));
 				 break;
 			 case KeyEvent.VK_DOWN:
-				 z -= CAMERA_ROTATION_RATE * Math.cos(Math.toRadians(angle));
-				 x += CAMERA_ROTATION_RATE * Math.sin(Math.toRadians(angle));
+				 myAvatar.z -= CAMERA_ROTATION_RATE * Math.cos(Math.toRadians(myAvatar.angle));
+				 myAvatar.x += CAMERA_ROTATION_RATE * Math.sin(Math.toRadians(myAvatar.angle));
 				 break;
 			 case KeyEvent.VK_LEFT:
-				 angle = (angle - ANGLE_ROTATION_RATE) % 360;
+				 myAvatar.angle = (myAvatar.angle - ANGLE_ROTATION_RATE) % 360;
 				 break;
 			 case KeyEvent.VK_RIGHT:
-				 angle = (angle + ANGLE_ROTATION_RATE) % 360;
+				 myAvatar.angle = (myAvatar.angle + ANGLE_ROTATION_RATE) % 360;
 				 break;
 			 case KeyEvent.VK_A:
 				 // Step left
-				 x += CAMERA_ROTATION_RATE;
+				 myAvatar.x += CAMERA_ROTATION_RATE;
 				 break;
 			 case KeyEvent.VK_D:
 				 // Step right
-				 x -= CAMERA_ROTATION_RATE;
+				 myAvatar.x -= CAMERA_ROTATION_RATE;
 				 break;
 			 case KeyEvent.VK_S:
 				 // Step down
-				 y += CAMERA_ROTATION_RATE;
+				 myAvatar.y += CAMERA_ROTATION_RATE;
 				 break;
 			 case KeyEvent.VK_W:
 				 // Step up
-				 y -= CAMERA_ROTATION_RATE;
+				 myAvatar.y -= CAMERA_ROTATION_RATE;
+				 break;
+			 case KeyEvent.VK_1:
+				 myAvatar.isThirdPerson = false;
+				 break;
+			 case KeyEvent.VK_3:
+				 myAvatar.isThirdPerson = true;
 				 break;
 			 default:
 				 break;
 		}
-		System.out.println(angle);
+		System.out.println(myAvatar.angle);
 	}
 
 	@Override

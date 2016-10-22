@@ -265,6 +265,7 @@ public class Terrain {
     }
 
 	public void drawTerrain(GL2 gl, Texture[] textures) {
+		gl.glPushMatrix();
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[SAND].getTextureId());
 		
 //		gl.glColor4d(0, 0, 0, 1); // color
@@ -315,6 +316,7 @@ public class Terrain {
 //        	}
 //        }
 //        gl.glEnd();
+        gl.glPopMatrix();
 	}
 
 	public void drawTrees(GL2 gl, Texture[] textures) {

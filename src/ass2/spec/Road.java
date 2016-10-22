@@ -212,6 +212,7 @@ public class Road {
     }
     
     public void drawSelf(GL2 gl, Terrain terrain, Texture[] textures) {
+    	gl.glPushMatrix();
     	final double halfWidth = myWidth/2;
     	
         float matAmbAndDif[] = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -229,7 +230,7 @@ public class Road {
     	
     	gl.glBegin(GL2.GL_TRIANGLE_STRIP);
     	
-    	for(double i = 0; i < size(); i += 0.05) {	// adjust increment to change smoothness
+    	for (double i = 0; i < size(); i += 0.05) {	// adjust increment to change smoothness
     		
     		double[] p = point(i, terrain);
     		double[] norm = get2dNormal(i);
@@ -255,6 +256,6 @@ public class Road {
     	}
     	
     	gl.glEnd();
+    	gl.glPopMatrix();
     }
-
 }
