@@ -25,7 +25,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 	private static final int ANGLE_ROTATION_RATE = 5;
     private Terrain myTerrain;
     private Avatar myAvatar;
-    private Camera myCamera;
+//    private Camera myCamera;
 
     private String sandFileName = "textures/sand.bmp";
     private String sandFileExt = "bmp";
@@ -45,7 +45,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         myTerrain = terrain;
         textures = new Texture[3];
         myAvatar = new Avatar();
-        myCamera = new Camera();
+//        myCamera = new Camera();
     }
 
     /**
@@ -94,8 +94,8 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     	gl.glClearColor(1.0f, 0.71f, 0.58f, 1);
     	gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
     	
-    	myAvatar.drawSelf(gl, myTerrain, myCamera.isThirdPerson);
-    	myCamera.setupCamera(gl);
+    	myAvatar.drawSelf(gl, myTerrain, myAvatar.isThirdPerson);
+//    	myCamera.setupCamera(gl);
     	myTerrain.setLighting(gl);
     	myTerrain.draw(drawable, textures);
 	}
@@ -181,10 +181,10 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 				 myAvatar.y -= CAMERA_ROTATION_RATE;
 				 break;
 			 case KeyEvent.VK_1:
-				 myCamera.isThirdPerson = false;
+				 myAvatar.isThirdPerson = false;
 				 break;
 			 case KeyEvent.VK_3:
-				 myCamera.isThirdPerson = true;
+				 myAvatar.isThirdPerson = true;
 				 break;
 			 default:
 				 break;
