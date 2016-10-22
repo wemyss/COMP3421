@@ -25,6 +25,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 	private static final int ANGLE_ROTATION_RATE = 5;
     private Terrain myTerrain;
     private Avatar myAvatar;
+    private Camera myCamera;
 
     private String sandFileName = "textures/sand.bmp";
     private String sandFileExt = "bmp";
@@ -34,16 +35,17 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     private String roadFileExt = "png";
     private Texture textures[];
 
-    private double x = 2.57;
-    private double y = -3.0;
-    private double z = 4.16;
-    private int angle = 140;
+//    protected double x = 2.57;
+//    protected double y = -3.0;
+//    protected double z = 4.16;
+//    protected int angle = 140;
 
     public Game(Terrain terrain) {
     	super("Assignment 2");
         myTerrain = terrain;
         textures = new Texture[3];
         myAvatar = new Avatar();
+        myCamera = new Camera();
     }
 
     /**
@@ -84,13 +86,6 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         game.run();
     }
 
-    private void setupCamera(GL2 gl) {
-    	gl.glRotated (angle, 0, 1, 0);	// Pan left/right
-    	y = -this.myTerrain.altitude(-x, -z) - 2;
-    	gl.glTranslated(x, y, z);	 	// Move camera back
-//    	System.out.println("x: " + x + " y: " + y + " z: " + z + " angle: " + angle);
-    }
-
 	@Override
 	public void display(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
@@ -98,10 +93,10 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     	gl.glLoadIdentity();
     	gl.glClearColor(1.0f, 0.71f, 0.58f, 1);
     	gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
-
-    	setupCamera(gl);
+    	
+    	myAvatar.drawSelf(gl, myTerrain, myCamera.isThirdPerson);
+    	myCamera.setupCamera(gl);
     	myTerrain.setLighting(gl);
-    	myAvatar.drawSelf(gl);
     	myTerrain.draw(drawable, textures);
 	}
 
@@ -156,45 +151,45 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
 			 case KeyEvent.VK_UP:
-				 z += CAMERA_ROTATION_RATE * Math.cos(Math.toRadians(angle));
-				 x -= CAMERA_ROTATION_RATE * Math.sin(Math.toRadians(angle));
+				 myAvatar.z += CAMERA_ROTATION_RATE * Math.cos(Math.toRadians(myAvatar.angle));
+				 myAvatar.x -= CAMERA_ROTATION_RATE * Math.sin(Math.toRadians(myAvatar.angle));
 				 break;
 			 case KeyEvent.VK_DOWN:
-				 z -= CAMERA_ROTATION_RATE * Math.cos(Math.toRadians(angle));
-				 x += CAMERA_ROTATION_RATE * Math.sin(Math.toRadians(angle));
+				 myAvatar.z -= CAMERA_ROTATION_RATE * Math.cos(Math.toRadians(myAvatar.angle));
+				 myAvatar.x += CAMERA_ROTATION_RATE * Math.sin(Math.toRadians(myAvatar.angle));
 				 break;
 			 case KeyEvent.VK_LEFT:
-				 angle = (angle - ANGLE_ROTATION_RATE) % 360;
+				 myAvatar.angle = (myAvatar.angle - ANGLE_ROTATION_RATE) % 360;
 				 break;
 			 case KeyEvent.VK_RIGHT:
-				 angle = (angle + ANGLE_ROTATION_RATE) % 360;
+				 myAvatar.angle = (myAvatar.angle + ANGLE_ROTATION_RATE) % 360;
 				 break;
 			 case KeyEvent.VK_A:
 				 // Step left
-				 x += CAMERA_ROTATION_RATE;
+				 myAvatar.x += CAMERA_ROTATION_RATE;
 				 break;
 			 case KeyEvent.VK_D:
 				 // Step right
-				 x -= CAMERA_ROTATION_RATE;
+				 myAvatar.x -= CAMERA_ROTATION_RATE;
 				 break;
 			 case KeyEvent.VK_S:
 				 // Step down
-				 y += CAMERA_ROTATION_RATE;
+				 myAvatar.y += CAMERA_ROTATION_RATE;
 				 break;
 			 case KeyEvent.VK_W:
 				 // Step up
-				 y -= CAMERA_ROTATION_RATE;
+				 myAvatar.y -= CAMERA_ROTATION_RATE;
 				 break;
 			 case KeyEvent.VK_1:
-				 myAvatar.setIsThirdPerson(false);
+				 myCamera.isThirdPerson = false;
 				 break;
 			 case KeyEvent.VK_3:
-				 myAvatar.setIsThirdPerson(true);
+				 myCamera.isThirdPerson = true;
 				 break;
 			 default:
 				 break;
 		}
-		System.out.println(angle);
+		System.out.println(myAvatar.angle);
 	}
 
 	@Override

@@ -212,6 +212,7 @@ public class Road {
     }
     
     public void drawSelf(GL2 gl, Terrain terrain, Texture[] textures) {
+    	gl.glPushMatrix();
     	final double halfWidth = myWidth/2;
     	
         float matAmbAndDif[] = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -255,6 +256,6 @@ public class Road {
     	}
     	
     	gl.glEnd();
+    	gl.glPopMatrix();
     }
-
 }
