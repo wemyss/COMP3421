@@ -141,14 +141,14 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 
         //You can use an orthographic camera
         //gl.glOrtho(-2, 2, -2, 2, 1, 20);
-//        GLU glu = new GLU();
-        //glu.gluPerspective(60,1,2,8);
+        GLU glu = new GLU();
+        glu.gluPerspective(60,1,1,20);
 
         //To find equivalent settings using gl.glFrustum
         // y = near * tan (30);
         // x = aspect * y
 
-        gl.glFrustum(-1, 1, -1, 1, 2, 20);
+//        gl.glFrustum(-1, 1, -1, 1, 2, 20);
 	}
 
 	@Override
