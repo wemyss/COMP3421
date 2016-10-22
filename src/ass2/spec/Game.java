@@ -25,7 +25,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 	private static final int ANGLE_ROTATION_RATE = 5;
     private Terrain myTerrain;
     private Avatar myAvatar;
-//    private Camera myCamera;
+
 
     private String sandFileName = "textures/sand.bmp";
     private String sandFileExt = "bmp";
@@ -35,17 +35,12 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     private String roadFileExt = "png";
     private Texture textures[];
 
-//    protected double x = 2.57;
-//    protected double y = -3.0;
-//    protected double z = 4.16;
-//    protected int angle = 140;
 
     public Game(Terrain terrain) {
     	super("Assignment 2");
         myTerrain = terrain;
         textures = new Texture[3];
         myAvatar = new Avatar();
-//        myCamera = new Camera();
     }
 
     /**
@@ -95,7 +90,6 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     	gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
     	
     	myAvatar.drawSelf(gl, myTerrain, myAvatar.isThirdPerson);
-//    	myCamera.setupCamera(gl);
     	myTerrain.setLighting(gl);
     	myTerrain.draw(drawable, textures);
 	}

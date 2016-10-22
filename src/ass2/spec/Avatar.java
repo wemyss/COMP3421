@@ -17,15 +17,27 @@ public class Avatar {
 	public void drawSelf(GL2 gl, Terrain terrain, boolean isThirdPerson) {
 		gl.glRotated (angle, 0, 1, 0);	// Pan left/right
 		if (isThirdPerson) {
-			gl.glTranslated(Math.sin(Math.toRadians(angle)) * 2, -0.6, -Math.cos(Math.toRadians(angle)) * 2);
-//			gl.glPushMatrix();
+			y = -terrain.altitude(-x, -z) - 1;
+			gl.glRotated (
+					-15, 
+					-Math.cos(Math.toRadians(angle)), 
+					0, 
+					-Math.sin(Math.toRadians(angle))
+			);
+			gl.glTranslated(
+					Math.sin(Math.toRadians(angle))*0.8, 
+					-0.5, 
+					-Math.cos(Math.toRadians(angle))*0.8
+			);
 			GLUT glut = new GLUT();
-	    	glut.glutWireTeapot(0.2);
-//	    	gl.glPopMatrix();
+	    	glut.glutWireTeapot(0.15);
+
+		} else {
+			y = -terrain.altitude(-x, -z) - 1.5;
 		}
 		
 		
-    	y = -terrain.altitude(-x, -z) - 2;
+//    	y = -terrain.altitude(-x, -z) - 2;
     	gl.glTranslated(x, y, z);	 	// Move camera back
 		
 		
