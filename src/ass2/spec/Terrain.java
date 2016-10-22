@@ -267,7 +267,7 @@ public class Terrain {
     	drawTerrain(gl, textures);
     	drawTrees(gl, textures);
     	drawRoads(gl, textures);
-    	drawOthers(gl, textures);
+    	//drawOthers(gl, textures);
     }
 
 	public void drawTerrain(GL2 gl, Texture[] textures) {
@@ -369,7 +369,7 @@ public class Terrain {
 	public void drawOthers(GL2 gl, Texture[] textures){
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[ROAD].getTextureId());
 		for (Other o : myOthers) {
-			o.drawSelf(gl, textures);
+			o.drawSelf(gl);
 		}
         gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}
