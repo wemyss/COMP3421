@@ -258,9 +258,9 @@ public class Terrain {
     	gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
     	
     	
-    	//drawTerrain(gl, textures);
-    	//drawTrees(gl, textures);
-//    	drawRoads(gl, textures);
+    	drawTerrain(gl, textures);
+    	drawTrees(gl, textures);
+    	drawRoads(gl, textures);
     	drawOthers(gl, textures);
     }
 
