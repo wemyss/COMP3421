@@ -28,6 +28,7 @@ public class Terrain {
     private double[][] myNormals;
     private List<Tree> myTrees;
     private List<Road> myRoads;
+    private List<Other> myOthers;
     private float[] mySunlight;
     private Lighting myLighting;
 
@@ -46,6 +47,7 @@ public class Terrain {
         myRoads = new ArrayList<Road>();
         mySunlight = new float[3];
         myLighting = new Lighting();
+        myOthers = new ArrayList<Other>();
     }
 
     public Terrain(Dimension size) {
@@ -62,6 +64,10 @@ public class Terrain {
 
     public List<Road> roads() {
         return myRoads;
+    }
+    
+    public List<Other> others() {
+        return myOthers;
     }
 
     public float[] getSunlight() {
@@ -214,6 +220,19 @@ public class Terrain {
         Road road = new Road(width, spine);
         myRoads.add(road);
     }
+    
+    /**
+     * Add an other at the specified (x,z) point.
+     * The others y coordinate is calculated from the altitude of the terrain at that point.
+     *
+     * @param x
+     * @param z
+     */
+    public void addOther(double x, double z) {
+        double y = altitude(x, z);
+        Other other = new Other(x, y, z);
+        myOthers.add(other);
+    }
 
     public void setLighting(GL2 gl) {
     	this.myLighting.setLighting(gl, mySunlight);
@@ -242,6 +261,7 @@ public class Terrain {
     	drawTerrain(gl, textures);
     	drawTrees(gl, textures);
     	drawRoads(gl, textures);
+    	drawOthers(gl, textures);
     }
 
 	public void drawTerrain(GL2 gl, Texture[] textures) {
@@ -354,6 +374,14 @@ public class Terrain {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[ROAD].getTextureId());
 		for (Road r : myRoads) {
 			r.drawSelf(gl, this, textures);
+		}
+        gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+	}
+	
+	public void drawOthers(GL2 gl, Texture[] textures){
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[ROAD].getTextureId());
+		for (Other o : myOthers) {
+			o.drawSelf(gl);
 		}
         gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}

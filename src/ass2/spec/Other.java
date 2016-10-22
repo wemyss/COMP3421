@@ -41,20 +41,26 @@ public class Other {
 	private int bufferIds[] = new int[2];
 	
 	
-	private static final String VERTEX_SHADER = "src/week7/vbos/AttributeVertex.glsl";
-	private static final String FRAGMENT_SHADER = "src/week7/vbos/AttributeFragment.glsl";
+	private static final String VERTEX_SHADER = "shaders/AttributeVertex.glsl";
+	private static final String FRAGMENT_SHADER = "shaders/AttributeFragment.glsl";
 	 
 	private int shaderprogram;
 	 	
     
-    public Other(double x, double y, double z, GLAutoDrawable drawable) {
-    	GL2 gl = drawable.getGL().getGL2();
-   	 
+    public Other(double x, double y, double z) {
         myPos = new double[3];
         myPos[0] = x;
         myPos[1] = y;
         myPos[2] = z;
-        
+    }
+    
+    public double[] getPosition() {
+        return myPos;
+    }
+    
+    public void init(GLAutoDrawable drawable){
+    	GL2 gl = drawable.getGL().getGL2();
+    	
         //Generate 2 VBO buffer and get their IDs
         gl.glGenBuffers(2,bufferIds,0);
        
@@ -90,9 +96,8 @@ public class Other {
     	        indexes.length *Short.BYTES,
     	        indexData, GL2.GL_STATIC_DRAW);
    	    	 
-   	 try {
-   		 shaderprogram = Shader.initShaders(gl,VERTEX_SHADER,FRAGMENT_SHADER);
-  		    		 
+   	 	try {
+   	 		shaderprogram = Shader.initShaders(gl,VERTEX_SHADER,FRAGMENT_SHADER);  		 
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -101,12 +106,7 @@ public class Other {
 
     }
     
-    public double[] getPosition() {
-        return myPos;
-    }
-    
-    public void drawOther(GLAutoDrawable drawable) {
-    	GL2 gl = drawable.getGL().getGL2();
+    public void drawSelf(GL2 gl) {
     	gl.glMatrixMode(GL2.GL_MODELVIEW);
     	gl.glLoadIdentity();
 
@@ -128,7 +128,10 @@ public class Other {
 										    //co-ordinates in the current array buffer
     	
    	    //Draw triangles, using 6 vertices, starting at vertex index 0 
-   	    gl.glDrawArrays(GL2.GL_TRIANGLES,0,6);      
+   	    gl.glPushMatrix();
+   	    gl.glTranslated(this.myPos[0], this.myPos[1], this.myPos[2]);
+    	gl.glDrawArrays(GL2.GL_TRIANGLES,0,6);  
+    	gl.glPopMatrix();
         	
    	    //Disable these. Not needed in this example, but good practice.
    	    gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);

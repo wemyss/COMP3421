@@ -2,7 +2,7 @@ package ass2.spec;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-
+import java.util.Iterator;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -130,6 +130,12 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         textures[0] = new Texture(gl, sandFileName, sandFileExt);
         textures[1] = new Texture(gl, cactusFileName, cactusFileExt);
         textures[2] = new Texture(gl, roadFileName, roadFileExt);
+        
+        Iterator<Other> otherIt = myTerrain.others().iterator();
+        while (otherIt.hasNext()){
+        	Other other = otherIt.next();
+        	other.init(drawable);
+        }
 	}
 
 	@Override
