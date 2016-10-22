@@ -367,9 +367,9 @@ public class Terrain {
 	}
 	
 	public void drawOthers(GL2 gl, Texture[] textures){
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[ROAD].getTextureId());
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[CACTUS].getTextureId());
 		for (Other o : myOthers) {
-			o.drawSelf(gl);
+			o.drawSelf(gl, textures);
 		}
         gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}
