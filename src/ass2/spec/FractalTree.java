@@ -92,7 +92,7 @@ public class FractalTree {
     	GLUquadric cylinder = glu.gluNewQuadric();
         glu.gluQuadricTexture(cylinder, true);
         glu.gluQuadricNormals(cylinder, GLU.GLU_SMOOTH);
-        glu.gluCylinder(cylinder,thickness,thickness,length,4,4);
+        glu.gluCylinder(cylinder,thickness,thickness,length,32,32);
         gl.glPopMatrix();
     	gl.glTranslated(0, length*0.8, 0);
     }
