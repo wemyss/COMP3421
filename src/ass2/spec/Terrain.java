@@ -29,6 +29,7 @@ public class Terrain {
     private List<Tree> myTrees;
     private List<Road> myRoads;
     private float[] mySunlight;
+    protected int sunAngle;
     private Lighting myLighting;
 
 
@@ -46,6 +47,7 @@ public class Terrain {
         myRoads = new ArrayList<Road>();
         mySunlight = new float[3];
         myLighting = new Lighting();
+        sunAngle = 0;
     }
 
     public Terrain(Dimension size) {
@@ -220,7 +222,7 @@ public class Terrain {
     }
 
     public void setLighting(GL2 gl) {
-    	this.myLighting.setLighting(gl, mySunlight);
+    	this.myLighting.setLighting(gl, mySunlight, sunAngle);
     }
 
     public void draw(GLAutoDrawable drawable, Texture[] textures) {

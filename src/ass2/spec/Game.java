@@ -187,6 +187,16 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 			 case KeyEvent.VK_3:
 				 myAvatar.isThirdPerson = true;
 				 break;
+			 case KeyEvent.VK_COMMA:
+				 if(myTerrain.sunAngle > -40) {
+					 myTerrain.sunAngle -= 1;
+				 }
+				 break;
+			 case KeyEvent.VK_PERIOD:
+				 if(myTerrain.sunAngle < 40) {
+					 myTerrain.sunAngle += 1;
+				 }
+				 break;
 			 default:
 				 break;
 		}
