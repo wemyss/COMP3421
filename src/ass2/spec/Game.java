@@ -158,6 +158,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
 			 case KeyEvent.VK_UP:
+				 // Rotate in a circle, sin() + cos() = 1
 				 myAvatar.z += CAMERA_ROTATION_RATE * Math.cos(Math.toRadians(myAvatar.angle));
 				 myAvatar.x -= CAMERA_ROTATION_RATE * Math.sin(Math.toRadians(myAvatar.angle));
 				 break;
