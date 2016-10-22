@@ -229,7 +229,7 @@ public class Road {
     	
     	gl.glBegin(GL2.GL_TRIANGLE_STRIP);
     	
-    	for(double i = 0; i < size(); i += 0.05) {	// adjust increment to change smoothness
+    	for (double i = 0; i < size(); i += 0.05) {	// adjust increment to change smoothness
     		
     		double[] p = point(i, terrain);
     		double[] norm = get2dNormal(i);

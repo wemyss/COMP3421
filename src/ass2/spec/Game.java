@@ -24,6 +24,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 	private static final double CAMERA_ROTATION_RATE = 0.4;
 	private static final int ANGLE_ROTATION_RATE = 5;
     private Terrain myTerrain;
+    private Avatar myAvatar;
 
     private String sandFileName = "textures/sand.bmp";
     private String sandFileExt = "bmp";
@@ -42,6 +43,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     	super("Assignment 2");
         myTerrain = terrain;
         textures = new Texture[3];
+        myAvatar = new Avatar();
     }
 
     /**
@@ -82,6 +84,13 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
         game.run();
     }
 
+    private void setupCamera(GL2 gl) {
+    	gl.glRotated (angle, 0, 1, 0);	// Pan left/right
+    	y = -this.myTerrain.altitude(-x, -z) - 2;
+    	gl.glTranslated(x, y, z);	 	// Move camera back
+//    	System.out.println("x: " + x + " y: " + y + " z: " + z + " angle: " + angle);
+    }
+
 	@Override
 	public void display(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
@@ -90,17 +99,10 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     	gl.glClearColor(1.0f, 0.71f, 0.58f, 1);
     	gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 
-
-    	gl.glRotated (angle, 0, 1, 0);	// Pan left/right
-    	y = -this.myTerrain.altitude(-x, -z) - 2;
-    	gl.glTranslated(x, y, z);	 	// Move camera back
-//    	System.out.println("x: " + x + " y: " + y + " z: " + z + " angle: " + angle);
-
-    	this.myTerrain.setLighting(gl);
-
-
-//    	gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
-    	this.myTerrain.draw(drawable, textures);
+    	setupCamera(gl);
+    	myTerrain.setLighting(gl);
+    	myAvatar.drawSelf(gl);
+    	myTerrain.draw(drawable, textures);
 	}
 
 	@Override
@@ -133,23 +135,21 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 	}
 
 	@Override
-	public void reshape(GLAutoDrawable drawable, int x, int y, int width,
-			int height) {
+	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
         GLU glu = new GLU();
         GL2 gl = drawable.getGL().getGL2();
-        
+
         if (height == 0) height = 1;
         float aspect = (float)width / height;
-      
+
         // Setup perspective projection, with aspect ratio matches viewport
         gl.glMatrixMode(gl.GL_PROJECTION);
-        gl.glLoadIdentity(); 
-        glu.gluPerspective(45.0, aspect, 0.1, 100.0); 
+        gl.glLoadIdentity();
+        glu.gluPerspective(45.0, aspect, 0.1, 100.0);
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -184,6 +184,12 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 			 case KeyEvent.VK_W:
 				 // Step up
 				 y -= CAMERA_ROTATION_RATE;
+				 break;
+			 case KeyEvent.VK_1:
+				 myAvatar.setIsThirdPerson(false);
+				 break;
+			 case KeyEvent.VK_3:
+				 myAvatar.setIsThirdPerson(true);
 				 break;
 			 default:
 				 break;
