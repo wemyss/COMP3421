@@ -258,9 +258,9 @@ public class Terrain {
     	gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
     	
     	
-    	drawTerrain(gl, textures);
-    	drawTrees(gl, textures);
-    	drawRoads(gl, textures);
+    	//drawTerrain(gl, textures);
+    	//drawTrees(gl, textures);
+//    	drawRoads(gl, textures);
     	drawOthers(gl, textures);
     }
 
@@ -381,9 +381,9 @@ public class Terrain {
 	}
 	
 	public void drawOthers(GL2 gl, Texture[] textures){
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[ROAD].getTextureId());
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[CACTUS].getTextureId());
 		for (Other o : myOthers) {
-			o.drawSelf(gl);
+			o.drawSelf(gl, textures);
 		}
         gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}
