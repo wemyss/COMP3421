@@ -287,8 +287,8 @@ public class Terrain {
     	drawTerrain(gl, textures);
     	drawTrees(gl, textures);
     	drawRoads(gl, textures);
-    	drawOthers(gl, textures);
     	drawFractalTrees(gl, textures);
+    	drawOthers(gl, textures);
     }
 
 	public void drawTerrain(GL2 gl, Texture[] textures) {
@@ -397,6 +397,7 @@ public class Terrain {
 	
 	public void drawFractalTrees(GL2 gl, Texture[] textures){
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, textures[BARK].getTextureId());
+		gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
 		for (FractalTree t : myFractalTrees){
 			t.drawSelf(gl);
 		}
