@@ -27,12 +27,12 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
     private Avatar myAvatar;
 
 
-    private String sandFileName = "textures/sand.bmp";
-    private String sandFileExt = "bmp";
+    private String sandFileName = "textures/sand.jpg";
+    private String sandFileExt = "jpg";
     private String cactusFileName = "textures/cactus.png";
     private String cactusFileExt = "png";
-    private String roadFileName = "textures/dirt.png";
-    private String roadFileExt = "png";
+    private String roadFileName = "textures/dirt.jpg";
+    private String roadFileExt = "jpg";
     private String rockFileName = "textures/rock.jpg";
     private String rockFileExt = "jpg";
     private Texture textures[];
