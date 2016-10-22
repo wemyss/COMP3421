@@ -135,20 +135,16 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
 	@Override
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width,
 			int height) {
-		GL2 gl = drawable.getGL().getGL2();
-        gl.glMatrixMode(GL2.GL_PROJECTION);
-        gl.glLoadIdentity();
-
-        //You can use an orthographic camera
-        //gl.glOrtho(-2, 2, -2, 2, 1, 20);
         GLU glu = new GLU();
-        glu.gluPerspective(60,1,1,20);
-
-        //To find equivalent settings using gl.glFrustum
-        // y = near * tan (30);
-        // x = aspect * y
-
-//        gl.glFrustum(-1, 1, -1, 1, 2, 20);
+        GL2 gl = drawable.getGL().getGL2();
+        
+        if (height == 0) height = 1;
+        float aspect = (float)width / height;
+      
+        // Setup perspective projection, with aspect ratio matches viewport
+        gl.glMatrixMode(gl.GL_PROJECTION);
+        gl.glLoadIdentity(); 
+        glu.gluPerspective(45.0, aspect, 0.1, 100.0); 
 	}
 
 	@Override
